@@ -9,9 +9,9 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, subtitle, action }: PageHeaderProps) {
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       {/* Título e Subtítulo */}
-      <div>
+      <div className="flex-1">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
           {title}
         </h1>
@@ -22,9 +22,9 @@ export function PageHeader({ title, subtitle, action }: PageHeaderProps) {
         )}
       </div>
 
-      {/* Ação (Botão) - Fica embaixo em mobile */}
+      {/* Ação (Botão) */}
       {action && (
-        <div className="flex justify-start">
+        <div className="md:flex-shrink-0">
           {action}
         </div>
       )}
