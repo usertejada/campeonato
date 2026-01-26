@@ -8,9 +8,7 @@ import { Icon } from '../atoms/Icon';
 import { Button } from '../molecules/Button';
 import { UserDropdown } from '../molecules/UserDropdown';
 import { useAuth } from '../../contexts/AuthContext';
-import { useModal } from '../../contexts/ModalContext';
 import { navigationSections } from '../../config/navigation';
-import { MODAL_IDS } from '../../constants/modalIds';
 import type { NavigationItem } from '../../types';
 
 interface SidebarProps {
@@ -21,7 +19,6 @@ interface SidebarProps {
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const router = useRouter();
   const { user } = useAuth();
-  const { openModal } = useModal();
 
   const filterNavigationByRole = (items: NavigationItem[]) => {
     if (!user) return [];
@@ -108,16 +105,15 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             <h2 className="px-3 mb-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
               AÇÕES RÁPIDAS
             </h2>
-            <Button
-              variant="primary"
-              fullWidth
-              leftIcon={Plus}
-              onClick={() => {
-                openModal(MODAL_IDS.NEW_CHAMPIONSHIP);
-              }}
-            >
-              Novo Campeonato
-            </Button>
+            <Link href="/campeonatos">
+              <Button
+                variant="primary"
+                fullWidth
+                leftIcon={Plus}
+              >
+                Novo Campeonato
+              </Button>
+            </Link>
           </div>
         </nav>
 

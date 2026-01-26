@@ -51,6 +51,7 @@ export function FilterBar({
               onChange={filter.onChange}
               options={filter.options}
               placeholder={filter.placeholder}
+              className="w-full sm:w-48"
             />
           ))}
 

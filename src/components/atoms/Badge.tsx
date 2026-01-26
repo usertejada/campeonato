@@ -2,7 +2,7 @@
 import React from 'react';
 
 type BadgeVariant = 'dot' | 'text' | 'filled';
-type BadgeColor = 'blue' | 'green' | 'yellow' | 'red' | 'purple' | 'gray';
+type BadgeColor = 'blue' | 'green' | 'yellow' | 'red' | 'purple' | 'gray' | 'orange';
 
 interface BadgeProps {
   children: React.ReactNode;
@@ -41,6 +41,11 @@ const colorClasses: Record<BadgeColor, { dot: string; text: string; filled: stri
     dot: 'text-gray-600',
     text: 'text-gray-600',
     filled: 'bg-gray-100 text-gray-700 border-gray-200'
+  },
+  orange: {
+    dot: 'text-orange-600',
+    text: 'text-orange-600',
+    filled: 'bg-orange-100 text-orange-700 border-orange-200'
   }
 };
 

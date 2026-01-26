@@ -1,16 +1,4 @@
-// src/utils/inputFormatters.ts
-
-/**
- * Formata texto com a primeira letra de cada palavra em maiúscula
- * Ex: "copa verão 2025" -> "Copa Verão 2025"
- */
-export function formatCapitalize(value: string): string {
-  return value
-    .toLowerCase()
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
+// src/utils/formatters/inputFormatters.ts
 
 /**
  * Formata número de telefone no padrão brasileiro

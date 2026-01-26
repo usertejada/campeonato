@@ -1,4 +1,6 @@
+// ========================================
 // src/components/atoms/ImageUpload.tsx
+// ========================================
 import React, { useState } from 'react';
 import { Camera, X } from 'lucide-react';
 import { Icon } from './Icon';
@@ -17,7 +19,7 @@ export function ImageUpload({
   value,
   onChange,
   label,
-  placeholder = 'Adicionar Imagem',
+  placeholder = 'Adicionar Logo',
   size = 'md',
   shape = 'square',
   className = ''
@@ -28,11 +30,11 @@ export function ImageUpload({
   const sizeClasses = {
     sm: 'w-24 h-24',
     md: 'w-32 h-32',
-    lg: 'w-40 h-40'
+    lg: 'w-32 h-32'
   };
 
   const shapeClasses = {
-    square: 'rounded-xl',
+    square: 'rounded-2xl',
     circle: 'rounded-full'
   };
 
@@ -87,10 +89,10 @@ export function ImageUpload({
   const inputId = `image-upload-${Math.random().toString(36).substr(2, 9)}`;
 
   return (
-    <div className={`flex flex-col items-center ${className}`}>
-      {/* Label opcional acima do upload */}
+    <div className={`flex flex-col ${className}`}>
+      {/* Label iOS Style */}
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-3">
+        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
           {label}
         </label>
       )}
@@ -112,15 +114,14 @@ export function ImageUpload({
           ${sizeClasses[size]} 
           ${shapeClasses[shape]}
           border-2 border-dashed 
-          ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'}
+          ${isDragging ? 'border-blue-400 bg-blue-50' : 'border-gray-300 bg-gray-50'}
           flex items-center justify-center 
           overflow-hidden 
-          hover:border-blue-400 
+          hover:bg-gray-100 
           transition-all 
           cursor-pointer
           relative
           group
-          p-0.5
         `}
       >
         {preview ? (
@@ -128,32 +129,25 @@ export function ImageUpload({
             <img 
               src={preview} 
               alt="Preview" 
-              className="w-full h-full object-contain rounded-lg" 
+              className="w-full h-full object-cover" 
             />
-            {/* Botão de remover */}
             <button
               onClick={handleRemove}
-              className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 z-10"
+              className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
               type="button"
             >
-              <Icon icon={X} size={16} />
+              <Icon icon={X} size={14} />
             </button>
           </>
         ) : (
-          <div className="text-center p-2">
-            <Icon icon={Camera} size={32} className="text-gray-400 mx-auto mb-1" />
-            <p className="text-[10px] text-gray-400 uppercase font-bold">
+          <div className="text-center px-2">
+            <Icon icon={Camera} size={22} className="text-gray-400 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+            <p className="text-[10px] text-gray-400 text-center leading-tight">
               {placeholder}
             </p>
           </div>
         )}
       </div>
-      
-      {!preview && (
-        <p className="text-xs text-gray-500 mt-2 text-center">
-          Clique ou arraste uma imagem
-        </p>
-      )}
     </div>
   );
 }

@@ -24,6 +24,6 @@ export interface User {
   initials: string;
 }
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
+export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'cancel';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 export type MaxWidth = 'full' | '7xl' | '6xl' | '5xl';

@@ -5,6 +5,7 @@ import { Badge } from '../atoms/Badge';
 import { DropdownMenu } from '../molecules/DropdownMenu';
 import type { DropdownMenuItem } from '../molecules/DropdownMenu';
 import { Trophy, Users, Calendar, Power, Edit, Eye, Trash2 } from 'lucide-react';
+import type { BadgeColor } from '../../utils/helpers/badge.helper'; // ✅ IMPORTADO
 
 interface ChampionshipCardProps {
   id: string;
@@ -18,14 +19,14 @@ interface ChampionshipCardProps {
   startDate: string;
   endDate: string;
   categoryBadgeVariant?: 'dot' | 'text' | 'filled';
-  categoryBadgeColor?: 'blue' | 'green' | 'yellow' | 'red' | 'purple' | 'gray';
-  statusBadgeColor?: 'blue' | 'green' | 'yellow' | 'red' | 'purple' | 'gray';
+  categoryBadgeColor?: BadgeColor; // ✅ CORRIGIDO
+  statusBadgeColor?: BadgeColor;   // ✅ CORRIGIDO
   activeDropdown: string | null;
   onToggleDropdown: (id: string | null) => void;
   onToggleStatus: (id: string) => void;
   onDelete: (id: string) => void;
-  onEdit?: (id: string) => void; // ✅ NOVO
-  onViewDetails?: (id: string) => void; // ✅ NOVO
+  onEdit?: (id: string) => void;
+  onViewDetails?: (id: string) => void;
 }
 
 export function ChampionshipCard({
@@ -46,8 +47,8 @@ export function ChampionshipCard({
   onToggleDropdown,
   onToggleStatus,
   onDelete,
-  onEdit, // ✅ NOVO
-  onViewDetails, // ✅ NOVO
+  onEdit,
+  onViewDetails,
 }: ChampionshipCardProps) {
   
   // Define os itens do menu dropdown
@@ -60,12 +61,12 @@ export function ChampionshipCard({
     {
       label: 'Editar',
       icon: Edit,
-      onClick: () => onEdit?.(id) // ✅ ATUALIZADO
+      onClick: () => onEdit?.(id)
     },
     {
       label: 'Ver Detalhes',
       icon: Eye,
-      onClick: () => onViewDetails?.(id) // ✅ ATUALIZADO
+      onClick: () => onViewDetails?.(id)
     },
     {
       label: 'Excluir',

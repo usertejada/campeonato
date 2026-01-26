@@ -1,7 +1,6 @@
 // src/pages/index.tsx
 import { Layout } from '../components/organisms/Layout';
 import { AuthProvider } from '../contexts/AuthContext';
-import { ModalProvider } from '../contexts/ModalContext';
 import { Trophy, TrendingUp, Users, Calendar } from 'lucide-react';
 import { PageHeader } from '../components/molecules/PageHeader';
 import { StatCard } from '@/components/molecules/StatCard';
@@ -50,7 +49,7 @@ function DashboardContent() {
         subtitle="Bem-vindo ao ChampionSystem"
       />
 
-      {/* Grid de Cards de Estatísticas */}
+      {/* Grid de Cards de Estatísticass */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
           <StatCard
@@ -72,11 +71,9 @@ function DashboardContent() {
 export default function DashboardPage() {
   return (
     <AuthProvider>
-      <ModalProvider>
         <Layout showBreadcrumb={true} maxWidth="7xl">
           <DashboardContent />
         </Layout>
-      </ModalProvider>
     </AuthProvider>
   );
 }

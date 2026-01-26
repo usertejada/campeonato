@@ -54,7 +54,7 @@ export function Modal({
     md: 'max-w-md',      // ~448px
     lg: 'max-w-lg',      // ~512px
     xl: 'max-w-xl',      // ~576px
-    '2xl': 'max-w-2xl'   // ~672px
+    '2xl': 'max-w-2xl'   // ~672pxx
   };
 
   return (
@@ -67,12 +67,12 @@ export function Modal({
       
       {/* Modal Content */}
       <div 
-        className={`relative bg-white rounded-2xl shadow-2xl w-full ${sizeClasses[size]} max-h-[90vh] flex flex-col animate-in fade-in zoom-in duration-200`}
+        className={`relative bg-white rounded-2xl shadow-2xl w-full max-w-xl ${sizeClasses[size]} max-h-[95vh] flex flex-col animate-in fade-in zoom-in duration-200`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">{title}</h2>
+        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 ">
+          <h2 className="text-[19px] font-semibold text-gray-900 tracking-tight">{title}</h2>
           {showCloseButton && (
             <button
               onClick={onClose}

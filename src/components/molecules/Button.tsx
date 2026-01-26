@@ -15,7 +15,7 @@ interface ButtonProps {
   disabled?: boolean;
   className?: string;
   mobileIconOnly?: boolean;
-  type?: 'button' | 'submit' | 'reset'; // ✅ ADICIONADO
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export function Button({
@@ -29,15 +29,16 @@ export function Button({
   disabled = false,
   className = '',
   mobileIconOnly = false,
-  type = 'button', // ✅ ADICIONADO (padrão: 'button')
+  type = 'button',
 }: ButtonProps) {
   const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200';
   
   const variantClasses: Record<ButtonVariant, string> = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800',
+    primary: 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 active:scale-[0.97] shadow-md',
     secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',
     outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
     ghost: 'text-gray-700 hover:bg-gray-100',
+    cancel: 'text-gray-500 hover:bg-gray-200/50 border border-gray-200',
   };
 
   const sizeClasses: Record<ButtonSize, string> = {
@@ -56,7 +57,7 @@ export function Button({
 
   return (
     <button
-      type={type} // ✅ ADICIONADO
+      type={type}
       onClick={onClick}
       disabled={disabled}
       className={`${baseClasses} ${mobileIconOnly ? mobileClasses : `${variantClasses[variant]} ${sizeClasses[size]}`} ${widthClass} ${disabledClass} ${className}`}

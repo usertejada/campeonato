@@ -1,8 +1,7 @@
 // src/pages/campeonatos/index.tsx
 import { Layout } from '../../components/organisms/Layout';
 import { AuthProvider } from '../../contexts/AuthContext';
-import { ModalProvider } from '../../contexts/ModalContext';
-import React, { useState } from 'react';
+import React from 'react';
 import { Plus, Trophy } from 'lucide-react';
 import { Button } from '../../components/molecules/Button';
 import { PageHeader } from '../../components/molecules/PageHeader';
@@ -10,20 +9,17 @@ import { EmptyState } from '../../components/molecules/EmptyState';
 import { StatCard } from '@/components/molecules/StatCard';
 import { FilterBar } from '../../components/organisms/FilterBar';
 import { Modal } from '../../components/molecules/Modal';
-import { ChampionshipForm } from '../../components/forms/ChampionshipForm';
+import { CreateChampionshipModal } from '../../components/modals/CreateChampionshipModal';
 import { ChampionshipCard } from '../../components/cards/ChampionshipCard';
 import { EditChampionshipModal } from '../../components/modals/EditChampionshipModal';
-import { ChampionshipDetailsModal } from '../../components/modals/ChampionshipDetailsModal'; // ✅ NOVO
+import { ChampionshipDetailsModal } from '../../components/modals/ChampionshipDetailsModal';
 import { useChampionships } from '@/hooks/entities/useChampionships';
+import { useEntityModals } from '@/hooks/common/useEntityModals';
+import type { Championship } from '../../types/championship.types';
 import { getChampionshipStatCards } from '../../utils/helpers/statCards.helper';
 import { getCategoryBadgeColor, getStatusBadgeColor } from '../../utils/helpers/badge.helper';
-import type { Championship } from '../../types/championship.types';
 
 function CampeonatosContent() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingChampionship, setEditingChampionship] = useState<Championship | null>(null);
-  const [viewingChampionship, setViewingChampionship] = useState<Championship | null>(null); // ✅ NOVO
-  
   const {
     filteredChampionships,
     searchTerm,
@@ -31,7 +27,7 @@ function CampeonatosContent() {
     activeDropdown,
     stats,
     addChampionship,
-    updateChampionship, // ✅ ADICIONAR
+    updateChampionship,
     setSearchTerm,
     setCategoryFilter,
     setActiveDropdown,
@@ -39,43 +35,24 @@ function CampeonatosContent() {
     deleteChampionship,
   } = useChampionships();
 
+  // ✅ Hook genérico para modais
+  const {
+    isCreateModalOpen,
+    editingItem: editingChampionship,
+    viewingItem: viewingChampionship,
+    openCreateModal,
+    closeCreateModal,
+    closeEditModal,
+    closeDetailsModal,
+    handleEdit,
+    handleViewDetails,
+  } = useEntityModals<Championship>({ 
+    items: filteredChampionships, 
+    setActiveDropdown,
+    entityName: 'Campeonato'
+  });
+
   const statCardsData = getChampionshipStatCards(stats);
-
-  // ✅ Função para abrir o modal de edição
-  const handleEdit = (id: string) => {
-    console.log('🔧 Editando campeonato ID:', id);
-    const championship = filteredChampionships.find(c => c.id === id);
-    console.log('📋 Campeonato encontrado:', championship);
-    
-    if (championship) {
-      setEditingChampionship(championship);
-      console.log('✅ Modal de edição deve abrir');
-    }
-    setActiveDropdown(null);
-  };
-
-  // ✅ Função para fechar o modal de edição
-  const handleCloseEditModal = () => {
-    console.log('🚪 Fechando modal de edição');
-    setEditingChampionship(null);
-  };
-
-  // ✅ Função para visualizar detalhes
-  const handleViewDetails = (id: string) => {
-    console.log('👁️ Visualizando detalhes do ID:', id);
-    const championship = filteredChampionships.find(c => c.id === id);
-    
-    if (championship) {
-      setViewingChampionship(championship); // ✅ Abre o modal
-      console.log('✅ Modal de detalhes deve abrir');
-    }
-    setActiveDropdown(null);
-  };
-
-  // ✅ Função para fechar o modal de detalhes
-  const handleCloseDetailsModal = () => {
-    setViewingChampionship(null);
-  };
 
   return (
     <div className="space-y-6">
@@ -85,7 +62,7 @@ function CampeonatosContent() {
         subtitle="Gerencie todos os campeonatos do sistema"
         action={
           <Button
-            onClick={() => setIsModalOpen(true)}
+            onClick={openCreateModal}
             leftIcon={Plus}
             variant="primary"
             size="md"
@@ -148,8 +125,8 @@ function CampeonatosContent() {
             onToggleDropdown={setActiveDropdown}
             onToggleStatus={toggleStatus}
             onDelete={deleteChampionship}
-            onEdit={handleEdit} // ✅ ADICIONAR ESTA LINHA
-            onViewDetails={handleViewDetails} // ✅ ADICIONAR ESTA LINHA
+            onEdit={handleEdit}
+            onViewDetails={handleViewDetails}
           />
         ))}
       </div>
@@ -162,49 +139,43 @@ function CampeonatosContent() {
           description="Tente ajustar os filtros ou adicione um novo campeonato"
           actionLabel="Novo Campeonato"
           actionIcon={Plus}
-          onAction={() => setIsModalOpen(true)}
+          onAction={openCreateModal}
         />
       )}
 
       {/* Modal de Novo Campeonato */}
       <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isCreateModalOpen}
+        onClose={closeCreateModal}
         title="Novo Campeonato"
       >
-        <ChampionshipForm
+        <CreateChampionshipModal
+          isOpen={isCreateModalOpen}
+          onClose={closeCreateModal}
           onSubmit={(data) => {
             addChampionship(data);
-            setIsModalOpen(false);
           }}
-          onCancel={() => setIsModalOpen(false)}
         />
       </Modal>
 
-      {/* ✅ Modal de Edição */}
+      {/* Modal de Edição */}
       {editingChampionship && (
         <EditChampionshipModal
           championship={editingChampionship}
           isOpen={true}
-          onClose={handleCloseEditModal}
+          onClose={closeEditModal}
           onUpdate={updateChampionship}
         />
       )}
 
-      {/* ✅ Modal de Detalhes */}
+      {/* Modal de Detalhes */}
       {viewingChampionship && (
         <ChampionshipDetailsModal
           championship={viewingChampionship}
           isOpen={true}
-          onClose={handleCloseDetailsModal}
+          onClose={closeDetailsModal}
         />
       )}
-
-      {/* Debug - pode remover depois */}
-      <div className="fixed bottom-4 right-4 bg-black text-white p-2 rounded text-xs space-y-1">
-        <div>Edição: {editingChampionship ? '✅ ABERTO' : '❌ FECHADO'}</div>
-        <div>Detalhes: {viewingChampionship ? '✅ ABERTO' : '❌ FECHADO'}</div>
-      </div>
     </div>
   );
 }
@@ -212,11 +183,9 @@ function CampeonatosContent() {
 export default function CampeonatosPage() {
   return (
     <AuthProvider>
-      <ModalProvider>
-        <Layout showBreadcrumb={true} maxWidth="7xl">
-          <CampeonatosContent />
-        </Layout>
-      </ModalProvider>
+      <Layout showBreadcrumb={true} maxWidth="7xl">
+        <CampeonatosContent />
+      </Layout>
     </AuthProvider>
   );
 }
