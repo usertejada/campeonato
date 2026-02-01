@@ -5,14 +5,15 @@ interface PageHeaderProps {
   title: string;
   subtitle?: string;
   action?: React.ReactNode;
+  titleClassName?: string;
 }
 
-export function PageHeader({ title, subtitle, action }: PageHeaderProps) {
+export function PageHeader({ title, subtitle, action, titleClassName = '' }: PageHeaderProps) {
   return (
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       {/* Título e Subtítulo */}
       <div className="flex-1">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+        <h1 className={`text-2xl sm:text-3xl font-bold text-gray-900 ${titleClassName}`}>
           {title}
         </h1>
         {subtitle && (
@@ -24,7 +25,7 @@ export function PageHeader({ title, subtitle, action }: PageHeaderProps) {
 
       {/* Ação (Botão) */}
       {action && (
-        <div className="md:flex-shrink-0">
+        <div className="md:shrink-0">
           {action}
         </div>
       )}

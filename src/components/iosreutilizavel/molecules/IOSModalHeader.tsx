@@ -35,7 +35,7 @@ export function IOSModalHeader({
         </p>
       </div>
 
-      <div className="w-[52px] h-[52px] bg-white rounded-2xl flex items-center justify-center shadow-md border border-black/5 flex-shrink-0">
+      <div className="w-13 h-13 bg-white rounded-2xl flex items-center justify-center shadow-md border border-black/5 shrink-0">
         {logo}
       </div>
     </div>
