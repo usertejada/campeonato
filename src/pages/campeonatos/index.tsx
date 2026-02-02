@@ -2,7 +2,7 @@
 import { Layout } from '../../components/organisms/Layout';
 import { AuthProvider } from '../../contexts/AuthContext';
 import React from 'react';
-import { Plus, Trophy } from 'lucide-react';
+import { UserPlus, Trophy } from 'lucide-react';
 import { Button } from '../../components/molecules/Button';
 import { PageHeader } from '../../components/molecules/PageHeader';
 import { EmptyState } from '../../components/molecules/EmptyState';
@@ -63,11 +63,11 @@ function CampeonatosContent() {
         action={
           <Button
             onClick={openCreateModal}
-            leftIcon={Plus}
+            leftIcon={UserPlus}
             variant="primary"
             size="md"
           >
-            Novo
+            Novo Cameponato
           </Button>
         }
       />
@@ -138,7 +138,7 @@ function CampeonatosContent() {
           title="Nenhum campeonato encontrado"
           description="Tente ajustar os filtros ou adicione um novo campeonato"
           actionLabel="Novo Campeonato"
-          actionIcon={Plus}
+          actionIcon={UserPlus}
           onAction={openCreateModal}
         />
       )}

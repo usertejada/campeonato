@@ -2,14 +2,20 @@
 
 import React from 'react';
 import { UserPlus, Users } from 'lucide-react';
-import { Layout } from '../../components/organisms/Layout';
-import { AuthProvider } from '../../contexts/AuthContext';
-import { Button } from '../../components/molecules/Button';
-import { PageHeader } from '../../components/molecules/PageHeader';
-import { FilterBar } from '../../components/organisms/FilterBar';
-import { EmptyState } from '../../components/molecules/EmptyState';
-import { TeamCard } from '../../components/cards/TeamCard';
-import { useTeams } from '../../hooks/entities/useTeams';
+import { Layout } from '@/components/organisms/Layout';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { Button } from '@/components/molecules/Button';
+import { PageHeader } from '@/components/molecules/PageHeader';
+import { FilterBar } from '@/components/organisms/FilterBar';
+import { EmptyState } from '@/components/molecules/EmptyState';
+import { Modal } from '@/components/molecules/Modal';
+import { TeamCard } from '@/components/cards/TeamCard';
+import { CreateTeamModal } from '@/components/modals/teams/CreateTeamModal';
+import { EditTeamModal } from '@/components/modals/teams/EditTeamModal';
+import { TeamDetailsModal } from '@/components/modals/teams/TeamDetailsModal';
+import { useTeams } from '@/hooks/entities/useTeams';
+import { useEntityModals } from '@/hooks/common/useEntityModals';
+import type { Team } from '@/types/team.types';
 
 function TimesContent() {
   const {
@@ -21,23 +27,31 @@ function TimesContent() {
     setSearchTerm,
     setChampionshipFilter,
     setActiveDropdown,
+    addTeam,
     updateTeam,
     deleteTeam,
   } = useTeams();
 
-  const handleNovoTime = () => {
-    // TODO: abrir modal de criação
-    console.log('Novo Time clicado');
-  };
+  // ✅ Hook genérico para modais
+  const {
+    isCreateModalOpen,
+    editingItem: editingTeam,
+    openCreateModal,
+    closeCreateModal,
+    closeEditModal,
+    handleEdit,
+  } = useEntityModals<Team>({ 
+    items: filteredTeams, 
+    setActiveDropdown,
+    entityName: 'Time'
+  });
 
-  const handleEdit = (id: string) => {
-    // TODO: abrir modal de edição
-    console.log('Editar time:', id);
-  };
+  // Estado do modal de detalhes
+  const [viewingTeam, setViewingTeam] = React.useState<Team | null>(null);
 
   const handleViewDetails = (id: string) => {
-    // TODO: abrir modal de detalhes
-    console.log('Ver detalhes do time:', id);
+    const team = filteredTeams.find(t => t.id === id);
+    if (team) setViewingTeam(team);
   };
 
   const handleToggleStatus = (id: string) => {
@@ -63,7 +77,7 @@ function TimesContent() {
             variant="primary"
             size="md"
             leftIcon={UserPlus}
-            onClick={handleNovoTime}
+            onClick={openCreateModal}
           >
             Novo Time
           </Button>
@@ -71,7 +85,7 @@ function TimesContent() {
       />
 
       {/* Filtros e Busca */}
-      <FilterBar
+      <FilterBar className='text-gray-500'
         searchValue={searchTerm}
         onSearchChange={setSearchTerm}
         searchPlaceholder="Buscar times..."
@@ -116,7 +130,37 @@ function TimesContent() {
           description="Tente ajustar os filtros ou adicione um novo time"
           actionLabel="Novo Time"
           actionIcon={UserPlus}
-          onAction={handleNovoTime}
+          onAction={openCreateModal}
+        />
+      )}
+
+      {/* Modal de Detalhes */}
+      {viewingTeam && (
+        <TeamDetailsModal
+          team={viewingTeam}
+          isOpen={true}
+          onClose={() => setViewingTeam(null)}
+        />
+      )}
+
+      {/* Modal de Novo Time */}
+      <CreateTeamModal
+        isOpen={isCreateModalOpen}
+        onClose={closeCreateModal}
+        onSubmit={(data) => {
+          addTeam(data);
+        }}
+        championshipOptions={championshipOptions}
+      />
+
+      {/* Modal de Edição */}
+      {editingTeam && (
+        <EditTeamModal
+          team={editingTeam}
+          isOpen={true}
+          onClose={closeEditModal}
+          onUpdate={updateTeam}
+          championshipOptions={championshipOptions}
         />
       )}
     </div>

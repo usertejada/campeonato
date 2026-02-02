@@ -39,6 +39,15 @@ class TeamService extends LocalStorageService<Team> {
   }
 
   /**
+   * Busca o ID do campeonato pelo nome
+   */
+  getChampionshipIdByName(name: string): string {
+    const championships = championshipService.getAll();
+    const championship = championships.find(c => c.name === name);
+    return championship?.id || '';
+  }
+
+  /**
    * Popula dados de exemplo
    */
   seedData(): void {

@@ -41,8 +41,8 @@ export function TeamCard({
   onDelete,
 }: TeamCardProps) {
   
-  // Verifica se é URL de imagem ou iniciais
-  const isImageUrl = logo.startsWith('http') || logo.startsWith('/');
+  // Verifica se é URL de imagem, base64 ou iniciais
+  const isImageUrl = logo.startsWith('http') || logo.startsWith('/') || logo.startsWith('data:image');
 
   // Itens do menu dropdown
   const dropdownItems: DropdownMenuItem[] = [
