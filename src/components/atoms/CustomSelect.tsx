@@ -71,7 +71,7 @@ export function CustomSelect({
         <Icon
           icon={ChevronDown}
           size={16}
-          className={`flex-shrink-0 text-gray-400 transition-transform duration-200 ${
+          className={`shrink-0 text-gray-400 transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
         />
