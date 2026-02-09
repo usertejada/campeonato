@@ -71,7 +71,7 @@ export function UserDropdown() {
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors rounded-lg"
       >
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
+        <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
           {user.initials}
         </div>
         <div className="flex-1 text-left">

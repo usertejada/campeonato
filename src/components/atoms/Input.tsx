@@ -7,10 +7,11 @@ import { Icon } from './Icon';
 
 interface InputProps {
   label?: string;
-  type?: 'text' | 'email' | 'password' | 'number' | 'date' | 'tel' | 'url';
+  type?: 'text' | 'email' | 'password' | 'number' | 'date' | 'time' | 'tel' | 'url';
   placeholder?: string;
   value: string | number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   required?: boolean;
   disabled?: boolean;
   leftIcon?: LucideIcon;
@@ -27,6 +28,7 @@ export function Input({
   placeholder,
   value,
   onChange,
+  onKeyPress,
   required = false,
   disabled = false,
   leftIcon,
@@ -61,6 +63,7 @@ export function Input({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          onKeyPress={onKeyPress}
           required={required}
           disabled={disabled}
           min={min}

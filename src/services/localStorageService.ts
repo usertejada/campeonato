@@ -1,11 +1,6 @@
 // src/services/localStorageService.ts
 
-/**
- * Serviço genérico para gerenciar dados no LocalStorage
- * Funciona com qualquer tipo de dado e é type-safe
- */
-
-export class LocalStorageService<T extends { id: string }> {
+export class LocalStorageService<T> {
   private key: string;
 
   constructor(key: string) {
@@ -13,9 +8,20 @@ export class LocalStorageService<T extends { id: string }> {
   }
 
   /**
-   * Busca todos os itens
+   * Verifica se está rodando no browser (client-side)
+   */
+  private isBrowser(): boolean {
+    return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
+  }
+
+  /**
+   * Retorna todos os itens salvos
    */
   getAll(): T[] {
+    if (!this.isBrowser()) {
+      return [];
+    }
+
     try {
       const data = localStorage.getItem(this.key);
       return data ? JSON.parse(data) : [];
@@ -26,25 +32,53 @@ export class LocalStorageService<T extends { id: string }> {
   }
 
   /**
-   * Busca um item por ID
+   * Retorna um item específico por ID
    */
-  getById(id: string): T | null {
-    const items = this.getAll();
-    return items.find(item => item.id === id) || null;
+  getById(id: string): T | undefined {
+    if (!this.isBrowser()) {
+      return undefined;
+    }
+
+    try {
+      const items = this.getAll();
+      return items.find((item: any) => item.id === id);
+    } catch (error) {
+      console.error(`Erro ao buscar item ${id} de ${this.key}:`, error);
+      return undefined;
+    }
   }
 
   /**
-   * Adiciona um novo item
+   * Salva todos os itens
+   */
+  setAll(items: T[]): void {
+    if (!this.isBrowser()) {
+      return;
+    }
+
+    try {
+      localStorage.setItem(this.key, JSON.stringify(items));
+    } catch (error) {
+      console.error(`Erro ao salvar ${this.key}:`, error);
+    }
+  }
+
+  /**
+   * Adiciona um novo item e retorna o item adicionado
    */
   add(item: T): T {
+    if (!this.isBrowser()) {
+      return item;
+    }
+
     try {
       const items = this.getAll();
       items.push(item);
-      localStorage.setItem(this.key, JSON.stringify(items));
+      this.setAll(items);
       return item;
     } catch (error) {
-      console.error(`Erro ao adicionar ${this.key}:`, error);
-      throw error;
+      console.error(`Erro ao adicionar item em ${this.key}:`, error);
+      return item;
     }
   }
 
@@ -52,67 +86,106 @@ export class LocalStorageService<T extends { id: string }> {
    * Atualiza um item existente
    */
   update(id: string, updatedItem: Partial<T>): T | null {
+    if (!this.isBrowser()) {
+      return null;
+    }
+
     try {
       const items = this.getAll();
-      const index = items.findIndex(item => item.id === id);
+      const index = items.findIndex((item: any) => item.id === id);
       
-      if (index === -1) return null;
-      
-      items[index] = { ...items[index], ...updatedItem };
-      localStorage.setItem(this.key, JSON.stringify(items));
-      return items[index];
+      if (index !== -1) {
+        items[index] = { ...items[index], ...updatedItem };
+        this.setAll(items);
+        return items[index];
+      }
+      return null;
     } catch (error) {
-      console.error(`Erro ao atualizar ${this.key}:`, error);
-      throw error;
+      console.error(`Erro ao atualizar item ${id} em ${this.key}:`, error);
+      return null;
     }
   }
 
   /**
    * Remove um item por ID
    */
-  delete(id: string): boolean {
+  remove(id: string): void {
+    if (!this.isBrowser()) {
+      return;
+    }
+
     try {
       const items = this.getAll();
-      const filteredItems = items.filter(item => item.id !== id);
-      
-      if (items.length === filteredItems.length) return false;
-      
-      localStorage.setItem(this.key, JSON.stringify(filteredItems));
-      return true;
+      const filteredItems = items.filter((item: any) => item.id !== id);
+      this.setAll(filteredItems);
     } catch (error) {
-      console.error(`Erro ao deletar ${this.key}:`, error);
-      throw error;
+      console.error(`Erro ao remover item ${id} de ${this.key}:`, error);
     }
   }
 
   /**
-   * Limpa todos os itens
+   * Remove todos os itens
    */
   clear(): void {
+    if (!this.isBrowser()) {
+      return;
+    }
+
     try {
       localStorage.removeItem(this.key);
     } catch (error) {
       console.error(`Erro ao limpar ${this.key}:`, error);
-      throw error;
     }
   }
 
   /**
-   * Verifica se existe algum item
+   * Verifica se a lista está vazia
    */
   isEmpty(): boolean {
-    return this.getAll().length === 0;
+    if (!this.isBrowser()) {
+      return true;
+    }
+
+    try {
+      const items = this.getAll();
+      return items.length === 0;
+    } catch (error) {
+      console.error(`Erro ao verificar se ${this.key} está vazio:`, error);
+      return true;
+    }
   }
 
   /**
-   * Conta quantos itens existem
+   * Verifica se existe algum item com determinado critério
    */
-  count(): number {
-    return this.getAll().length;
+  exists(predicate: (item: T) => boolean): boolean {
+    if (!this.isBrowser()) {
+      return false;
+    }
+
+    try {
+      const items = this.getAll();
+      return items.some(predicate);
+    } catch (error) {
+      console.error(`Erro ao verificar existência em ${this.key}:`, error);
+      return false;
+    }
+  }
+
+  /**
+   * Filtra itens baseado em um critério
+   */
+  filter(predicate: (item: T) => boolean): T[] {
+    if (!this.isBrowser()) {
+      return [];
+    }
+
+    try {
+      const items = this.getAll();
+      return items.filter(predicate);
+    } catch (error) {
+      console.error(`Erro ao filtrar ${this.key}:`, error);
+      return [];
+    }
   }
 }
-
-// Exemplo de uso:
-// const championshipService = new LocalStorageService<Championship>('championships');
-// championshipService.add(newChampionship);
-// championshipService.getAll();

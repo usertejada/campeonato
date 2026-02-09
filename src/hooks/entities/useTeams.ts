@@ -27,8 +27,8 @@ export function useTeams() {
       // Filtro de busca
       const matchSearch =
         team.name.toLowerCase().includes(search.toLowerCase()) ||
-        team.coach.toLowerCase().includes(search.toLowerCase()) ||
-        team.email.toLowerCase().includes(search.toLowerCase()) ||
+        (team.coach?.toLowerCase().includes(search.toLowerCase()) ?? false) ||
+        (team.email?.toLowerCase().includes(search.toLowerCase()) ?? false) ||
         team.championshipName.toLowerCase().includes(search.toLowerCase());
 
       // Filtro por campeonato

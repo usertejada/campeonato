@@ -1,23 +1,22 @@
 // src/pages/campeonatos/index.tsx
-import { Layout } from '../../components/organisms/Layout';
-import { AuthProvider } from '../../contexts/AuthContext';
 import React from 'react';
 import { UserPlus, Trophy } from 'lucide-react';
-import { Button } from '../../components/molecules/Button';
-import { PageHeader } from '../../components/molecules/PageHeader';
-import { EmptyState } from '../../components/molecules/EmptyState';
+import { Layout } from '@/components/organisms/Layout';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { Button } from '@/components/molecules/Button';
+import { PageHeader } from '@/components/molecules/PageHeader';
+import { EmptyState } from '@/components/molecules/EmptyState';
 import { StatCard } from '@/components/molecules/StatCard';
-import { FilterBar } from '../../components/organisms/FilterBar';
-import { Modal } from '../../components/molecules/Modal';
-import { CreateChampionshipModal } from '../../components/modals/CreateChampionshipModal';
-import { ChampionshipCard } from '../../components/cards/ChampionshipCard';
-import { EditChampionshipModal } from '../../components/modals/EditChampionshipModal';
-import { ChampionshipDetailsModal } from '../../components/modals/ChampionshipDetailsModal';
+import { FilterBar } from '@/components/organisms/FilterBar';
+import { ChampionshipCard } from '@/components/cards/ChampionshipCard';
+import { CreateChampionshipModal } from '@/components/modals/CreateChampionshipModal';
+import { EditChampionshipModal } from '@/components/modals/EditChampionshipModal';
+import { ChampionshipDetailsModal } from '@/components/modals/ChampionshipDetailsModal';
 import { useChampionships } from '@/hooks/entities/useChampionships';
 import { useEntityModals } from '@/hooks/common/useEntityModals';
-import type { Championship } from '../../types/championship.types';
-import { getChampionshipStatCards } from '../../utils/helpers/statCards.helper';
-import { getCategoryBadgeColor, getStatusBadgeColor } from '../../utils/helpers/badge.helper';
+import { getChampionshipStatCards } from '@/utils/helpers/statCards.helper';
+import { getCategoryBadgeColor, getStatusBadgeColor } from '@/utils/helpers/badge.helper';
+import type { Championship } from '@/types/championship.types';
 
 function CampeonatosContent() {
   const {
@@ -35,7 +34,6 @@ function CampeonatosContent() {
     deleteChampionship,
   } = useChampionships();
 
-  // ✅ Hook genérico para modais
   const {
     isCreateModalOpen,
     editingItem: editingChampionship,
@@ -67,7 +65,7 @@ function CampeonatosContent() {
             variant="primary"
             size="md"
           >
-            Novo Cameponato
+            Novo Campeonato
           </Button>
         }
       />
@@ -89,7 +87,7 @@ function CampeonatosContent() {
 
       {/* Filtros e Busca */}
       <FilterBar
-        className='text-gray-500'
+        className="text-gray-500"
         searchValue={searchTerm}
         onSearchChange={setSearchTerm}
         searchPlaceholder="Buscar campeonatos..."
@@ -103,36 +101,35 @@ function CampeonatosContent() {
         ]}
       />
 
-      {/* Grid de Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {filteredChampionships.map((champ) => (
-          <ChampionshipCard
-            key={champ.id}
-            id={champ.id}
-            logo={champ.logo}
-            name={champ.name}
-            organizer={champ.organizer}
-            category={champ.category}
-            status={champ.status}
-            teams={champ.teams}
-            format={champ.format}
-            startDate={champ.startDate}
-            endDate={champ.endDate}
-            categoryBadgeVariant="dot"
-            categoryBadgeColor={getCategoryBadgeColor(champ.category)}
-            statusBadgeColor={getStatusBadgeColor(champ.status)}
-            activeDropdown={activeDropdown}
-            onToggleDropdown={setActiveDropdown}
-            onToggleStatus={toggleStatus}
-            onDelete={deleteChampionship}
-            onEdit={handleEdit}
-            onViewDetails={handleViewDetails}
-          />
-        ))}
-      </div>
-
-      {/* Mensagem se não houver resultados */}
-      {filteredChampionships.length === 0 && (
+      {/* Grid de Cards ou Empty State */}
+      {filteredChampionships.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {filteredChampionships.map((champ) => (
+            <ChampionshipCard
+              key={champ.id}
+              id={champ.id}
+              logo={champ.logo}
+              name={champ.name}
+              organizer={champ.organizer}
+              category={champ.category}
+              status={champ.status}
+              teams={champ.teams}
+              format={champ.format}
+              startDate={champ.startDate}
+              endDate={champ.endDate}
+              categoryBadgeVariant="dot"
+              categoryBadgeColor={getCategoryBadgeColor(champ.category)}
+              statusBadgeColor={getStatusBadgeColor(champ.status)}
+              activeDropdown={activeDropdown}
+              onToggleDropdown={setActiveDropdown}
+              onToggleStatus={toggleStatus}
+              onDelete={deleteChampionship}
+              onEdit={handleEdit}
+              onViewDetails={handleViewDetails}
+            />
+          ))}
+        </div>
+      ) : (
         <EmptyState
           icon={Trophy}
           title="Nenhum campeonato encontrado"
@@ -144,19 +141,13 @@ function CampeonatosContent() {
       )}
 
       {/* Modal de Novo Campeonato */}
-      <Modal
+      <CreateChampionshipModal
         isOpen={isCreateModalOpen}
         onClose={closeCreateModal}
-        title="Novo Campeonato"
-      >
-        <CreateChampionshipModal
-          isOpen={isCreateModalOpen}
-          onClose={closeCreateModal}
-          onSubmit={(data) => {
-            addChampionship(data);
-          }}
-        />
-      </Modal>
+        onSubmit={(data) => {
+          addChampionship(data);
+        }}
+      />
 
       {/* Modal de Edição */}
       {editingChampionship && (

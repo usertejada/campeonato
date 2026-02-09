@@ -36,7 +36,7 @@ class ChampionshipService extends LocalStorageService<Championship> {
   }
 
   /**
-   * Alterna o status entre Ativo/Inativo
+   * Alterna o status entre Ativo/Inativoo
    */
   toggleStatus(id: string): Championship | null {
     const championship = this.getById(id);
@@ -88,35 +88,10 @@ class ChampionshipService extends LocalStorageService<Championship> {
         status: 'Em Andamento',
         format: 'Pontos Corridos',
         teams: 16,
-        startDate: '2025-01-14',
-        endDate: '2025-03-29'
-      },
-      {
-        id: '2',
-        name: 'Campeonato Feminino',
-        logo: '⚽',
-        organizer: 'Liga Esportiva',
-        local: 'Arena Central',
-        category: 'Feminino Livre',
-        status: 'Agendado',
-        format: 'Chaveamento',
-        teams: 8,
-        startDate: '2025-02-01',
-        endDate: '2025-04-15'
-      },
-      {
-        id: '3',
-        name: 'Torneio Sub-15',
-        logo: '⭐',
-        organizer: 'Clube Juventude',
-        local: 'Campo do Parque',
-        category: 'Sub-15',
-        status: 'Em Andamento',
-        format: 'Pontos Corridos',
-        teams: 12,
-        startDate: '2025-01-20',
-        endDate: '2025-05-10'
+        startDate: '2026-02-14',
+        endDate: '2026-04-30'
       }
+      
     ];
 
     exampleChampionships.forEach(champ => this.add(champ));

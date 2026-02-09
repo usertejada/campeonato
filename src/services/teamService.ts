@@ -24,6 +24,10 @@ class TeamService extends LocalStorageService<Team> {
     const newTeam: Team = {
       ...data,
       id: generateUniqueIdWithCheck(this.getAll(), 'team'),
+      coach: data.coach ?? '',
+      email: data.email ?? '',
+      players: data.players ?? 0,
+      foundedYear: data.foundedYear ?? new Date().getFullYear(),
       isActive: data.isActive ?? true,
     };
     return this.add(newTeam);
@@ -112,6 +116,19 @@ class TeamService extends LocalStorageService<Team> {
       {
         id: 'team_5',
         name: 'Flamengo',
+        logo: 'F',
+        championshipId: championships[1]?.id || championships[0].id,
+        championshipName: championships[1]?.name || championships[0].name,
+        coach: 'Tite',
+        email: 'contato@flamengo.com.br',
+        phone: '(21) 2569-2900',
+        players: 25,
+        foundedYear: 1895,
+        isActive: true,
+      },
+      {
+        id: 'team_6',
+        name: 'Fluminense',
         logo: 'F',
         championshipId: championships[1]?.id || championships[0].id,
         championshipName: championships[1]?.name || championships[0].name,

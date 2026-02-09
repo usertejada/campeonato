@@ -8,7 +8,6 @@ import { Button } from '@/components/molecules/Button';
 import { PageHeader } from '@/components/molecules/PageHeader';
 import { FilterBar } from '@/components/organisms/FilterBar';
 import { EmptyState } from '@/components/molecules/EmptyState';
-import { Modal } from '@/components/molecules/Modal';
 import { TeamCard } from '@/components/cards/TeamCard';
 import { CreateTeamModal } from '@/components/modals/teams/CreateTeamModal';
 import { EditTeamModal } from '@/components/modals/teams/EditTeamModal';
@@ -32,37 +31,27 @@ function TimesContent() {
     deleteTeam,
   } = useTeams();
 
-  // ✅ Hook genérico para modais
   const {
     isCreateModalOpen,
     editingItem: editingTeam,
+    viewingItem: viewingTeam,
     openCreateModal,
     closeCreateModal,
     closeEditModal,
+    closeDetailsModal,
     handleEdit,
+    handleViewDetails,
   } = useEntityModals<Team>({ 
     items: filteredTeams, 
     setActiveDropdown,
     entityName: 'Time'
   });
 
-  // Estado do modal de detalhes
-  const [viewingTeam, setViewingTeam] = React.useState<Team | null>(null);
-
-  const handleViewDetails = (id: string) => {
-    const team = filteredTeams.find(t => t.id === id);
-    if (team) setViewingTeam(team);
-  };
-
   const handleToggleStatus = (id: string) => {
     const team = filteredTeams.find(t => t.id === id);
     if (team) {
       updateTeam(id, { isActive: !team.isActive });
     }
-  };
-
-  const handleDelete = (id: string) => {
-    deleteTeam(id);
   };
 
   return (
@@ -85,7 +74,8 @@ function TimesContent() {
       />
 
       {/* Filtros e Busca */}
-      <FilterBar className='text-gray-500'
+      <FilterBar
+        className="text-gray-500"
         searchValue={searchTerm}
         onSearchChange={setSearchTerm}
         searchPlaceholder="Buscar times..."
@@ -99,7 +89,7 @@ function TimesContent() {
         ]}
       />
 
-      {/* Grid de Cards */}
+      {/* Grid de Cards ou Empty State */}
       {filteredTeams.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredTeams.map((team) => (
@@ -119,7 +109,7 @@ function TimesContent() {
               onViewDetails={handleViewDetails}
               onEdit={handleEdit}
               onToggleStatus={handleToggleStatus}
-              onDelete={handleDelete}
+              onDelete={deleteTeam}
             />
           ))}
         </div>
@@ -139,7 +129,7 @@ function TimesContent() {
         <TeamDetailsModal
           team={viewingTeam}
           isOpen={true}
-          onClose={() => setViewingTeam(null)}
+          onClose={closeDetailsModal}
         />
       )}
 

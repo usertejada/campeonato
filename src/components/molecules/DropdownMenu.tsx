@@ -18,6 +18,7 @@ interface DropdownMenuProps {
   activeDropdown: string | null;
   onToggleDropdown: (id: string | null) => void;
   position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+  triggerIcon?: LucideIcon; // Ícone customizado para o botão trigger
 }
 
 export function DropdownMenu({
@@ -25,7 +26,8 @@ export function DropdownMenu({
   items,
   activeDropdown,
   onToggleDropdown,
-  position = 'top-right'
+  position = 'top-right',
+  triggerIcon = MoreVertical // Padrão é MoreVertical se não for especificado
 }: DropdownMenuProps) {
   
   const positionClasses = {
@@ -49,7 +51,7 @@ export function DropdownMenu({
         className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
         aria-label="Menu de opções"
       >
-        <Icon icon={MoreVertical} size={18} className="text-gray-700" />
+        <Icon icon={triggerIcon} size={18} className="text-gray-700" />
       </button>
       
       {activeDropdown === id && (

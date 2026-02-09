@@ -1,4 +1,5 @@
 // src/pages/players/index.tsx
+
 import React from 'react';
 import { UserPlus, Users } from 'lucide-react';
 import { Layout } from '@/components/organisms/Layout';
@@ -29,37 +30,27 @@ function PlayersContent() {
     deletePlayer,
   } = usePlayers();
 
-  // ✅ Hook genérico para modais
   const {
     isCreateModalOpen,
     editingItem: editingPlayer,
+    viewingItem: viewingPlayer,
     openCreateModal,
     closeCreateModal,
     closeEditModal,
+    closeDetailsModal,
     handleEdit,
+    handleViewDetails,
   } = useEntityModals<Player>({ 
     items: filteredPlayers, 
     setActiveDropdown,
     entityName: 'Jogador'
   });
 
-  // Estado do modal de detalhes
-  const [viewingPlayer, setViewingPlayer] = React.useState<Player | null>(null);
-
-  const handleViewDetails = (id: string) => {
-    const player = filteredPlayers.find(p => p.id === id);
-    if (player) setViewingPlayer(player);
-  };
-
   const handleToggleStatus = (id: string) => {
     const player = filteredPlayers.find(p => p.id === id);
     if (player) {
       updatePlayer(id, { isActive: !player.isActive });
     }
-  };
-
-  const handleDelete = (id: string) => {
-    deletePlayer(id);
   };
 
   return (
@@ -83,7 +74,7 @@ function PlayersContent() {
 
       {/* Filtros e Busca */}
       <FilterBar 
-        className='text-gray-500'
+        className="text-gray-500"
         searchValue={searchTerm}
         onSearchChange={setSearchTerm}
         searchPlaceholder="Buscar jogadores..."
@@ -97,7 +88,7 @@ function PlayersContent() {
         ]}
       />
 
-      {/* Grid de Cards */}
+      {/* Grid de Cards ou Empty State */}
       {filteredPlayers.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredPlayers.map((player) => (
@@ -118,7 +109,7 @@ function PlayersContent() {
               onViewDetails={handleViewDetails}
               onEdit={handleEdit}
               onToggleStatus={handleToggleStatus}
-              onDelete={handleDelete}
+              onDelete={deletePlayer}
             />
           ))}
         </div>
@@ -138,7 +129,7 @@ function PlayersContent() {
         <PlayerDetailsModal
           player={viewingPlayer}
           isOpen={true}
-          onClose={() => setViewingPlayer(null)}
+          onClose={closeDetailsModal}
         />
       )}
 

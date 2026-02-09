@@ -1,19 +1,20 @@
 // src/components/cards/TeamCard.tsx
 import React from 'react';
-import { Phone, Calendar, Mail, Settings, Eye, Edit, Power, Trash2 } from 'lucide-react';
+import { Phone, Calendar, Mail, Eye, Edit, Power, Trash2 } from 'lucide-react';
 import { Icon } from '../atoms/Icon';
 import { Button } from '../molecules/Button';
+import { SettingsDropdown } from '../molecules/SettingsDropdown';
 import type { DropdownMenuItem } from '../molecules/DropdownMenu';
 
 interface TeamCardProps {
   id: string;
   name: string;
   logo: string;
-  coach: string;
+  coach?: string;
   championshipName: string;
-  email: string;
+  email?: string;
   phone?: string;
-  foundedYear: number;
+  foundedYear?: number;
   isActive?: boolean;
   activeDropdown: string | null;
   onToggleDropdown: (id: string | null) => void;
@@ -73,57 +74,14 @@ export function TeamCard({
   return (
     <div className="relative bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200">
       
-      {/* Engrenagem (posição absoluta no topo) */}
-      <div className="absolute top-4 right-4">
-        <button
-          onClick={() => onToggleDropdown(activeDropdown === id ? null : id)}
-          className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-          aria-label="Menu de opções"
-        >
-          <Icon icon={Settings} size={18} className="text-gray-600" />
-        </button>
-        
-        {activeDropdown === id && (
-          <>
-            {/* Backdrop */}
-            <div 
-              className="fixed inset-0 z-30"
-              onClick={() => onToggleDropdown(null)}
-            />
-            
-            {/* Dropdown */}
-            <div className="absolute right-0 top-10 w-48 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-40">
-              {dropdownItems.map((item, index) => (
-                <React.Fragment key={index}>
-                  {item.divider && (
-                    <div className="border-t border-gray-100 my-1"></div>
-                  )}
-                  <button
-                    onClick={() => {
-                      item.onClick();
-                      onToggleDropdown(null);
-                    }}
-                    className={`
-                      w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 transition-colors
-                      ${item.variant === 'danger' 
-                        ? 'text-red-600 hover:bg-red-50' 
-                        : 'text-gray-700 hover:bg-gray-50'
-                      }
-                    `}
-                  >
-                    <Icon 
-                      icon={item.icon} 
-                      size={16} 
-                      className={item.variant === 'danger' ? 'text-red-600' : 'text-gray-600'} 
-                    />
-                    <span>{item.label}</span>
-                  </button>
-                </React.Fragment>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
+      {/* Dropdown Menu (posição absoluta no topo) */}
+      <SettingsDropdown
+        id={id}
+        items={dropdownItems}
+        activeDropdown={activeDropdown}
+        onToggleDropdown={onToggleDropdown}
+        position="top-right"
+      />
 
       {/* Logo + Nome + Técnico */}
       <div className="flex items-start gap-3 mb-4">
@@ -149,7 +107,7 @@ export function TeamCard({
         {/* Nome + Técnico */}
         <div className="flex-1 min-w-0 pr-8">
           <h3 className="text-lg font-bold text-gray-900 truncate">{name}</h3>
-          <p className="text-sm text-blue-600 truncate">Téc. {coach}</p>
+          <p className="text-sm text-blue-600 truncate">Téc. {coach || 'Não informado'}</p>
         </div>
       </div>
 
@@ -160,20 +118,24 @@ export function TeamCard({
 
       {/* Informações: Email + Telefone + Fundado */}
       <div className="space-y-2 mb-6">
-        <div className="flex items-center gap-2 text-gray-600">
-          <Icon icon={Mail} size={16} className="text-gray-400 shrink-0" />
-          <span className="text-sm truncate">{email}</span>
-        </div>
+        {email && (
+          <div className="flex items-center gap-2 text-gray-600">
+            <Icon icon={Mail} size={16} className="text-gray-400 shrink-0" />
+            <span className="text-sm truncate">{email}</span>
+          </div>
+        )}
         {phone && (
           <div className="flex items-center gap-2 text-gray-600">
             <Icon icon={Phone} size={16} className="text-gray-400 shrink-0" />
             <span className="text-sm truncate">{phone}</span>
           </div>
         )}
-        <div className="flex items-center gap-2 text-gray-600">
-          <Icon icon={Calendar} size={16} className="text-gray-400 shrink-0" />
-          <span className="text-sm">Fundado em {foundedYear}</span>
-        </div>
+        {foundedYear && (
+          <div className="flex items-center gap-2 text-gray-600">
+            <Icon icon={Calendar} size={16} className="text-gray-400 shrink-0" />
+            <span className="text-sm">Fundado em {foundedYear}</span>
+          </div>
+        )}
       </div>
 
       {/* Botões de Ação */}

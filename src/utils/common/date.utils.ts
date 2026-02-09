@@ -32,3 +32,24 @@ export function calculateDaysDifference(startDate: string, endDate: string): num
   const diffTime = Math.abs(end.getTime() - start.getTime());
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
+
+/**
+ * Formata data da rodada com dia da semana completo
+ * Ex: "sábado, 15 de janeiro de 2025"
+ */
+export function formatRodadaDate(dateString: string): string {
+  return new Date(dateString + 'T00:00:00').toLocaleDateString('pt-BR', {
+    weekday: 'long',
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
+/**
+ * Retorna o rótulo da rodada com o sufixo correto
+ * Ex: "1ª Rodada", "2ª Rodada", "3ª Rodada"
+ */
+export function getRodadaLabel(numeroRodada: number): string {
+  return `${numeroRodada}ª Rodada`;
+}
