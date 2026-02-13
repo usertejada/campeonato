@@ -7,11 +7,13 @@ export interface Time {
 
 export interface Gol {
   jogador: string;
+  jogadorId: string; // ID do jogador para relacionamento
   minuto?: number;
 }
 
 export interface Cartao {
   jogador: string;
+  jogadorId: string; // ID do jogador para relacionamento
   time: 'casa' | 'visitante';
   tipo: 'amarelo' | 'vermelho';
 }

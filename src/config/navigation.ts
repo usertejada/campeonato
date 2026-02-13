@@ -31,21 +31,13 @@ export const managementItems: NavigationItem[] = [
   { name: 'Artilharia', path: '/artilharia', icon: Target },
 ];
 
-export const resourceItems: NavigationItem[] = [
-  { name: 'Carteirinhas', path: '/carteirinhas', icon: CreditCard },
-  { name: 'Relatórios', path: '/relatorios', icon: FileText },
-  { name: 'Troféus', path: '/trofeus', icon: Award },
-];
-
 export const systemItems: NavigationItem[] = [
   { name: 'Configurações', path: '/configuracoes', icon: Settings },
   { name: 'Notificações', path: '/notificacoes', icon: Bell },
-  { name: 'Estatísticas', path: '/estatisticas', icon: TrendingUp },
 ];
 
 export const navigationSections: NavigationSection[] = [
   { title: 'NAVEGAÇÃO', items: mainNavigationItems },
   { title: 'GERENCIAMENTO', items: managementItems },
-  { title: 'RECURSOS', items: resourceItems },
   { title: 'SISTEMA', items: systemItems },
 ];

@@ -11,6 +11,7 @@ import { EmptyState } from '@/components/molecules/EmptyState';
 import { PlayerCard } from '@/components/cards/PlayerCard';
 import { CreatePlayerModal } from '@/components/modals/players/CreatePlayerModal';
 import { PlayerDetailsModal } from '@/components/modals/players/PlayerDetailsModal';
+import { ModalCarteirinha } from '@/components/carteirinhas/ModalCarteirinha';
 import { usePlayers } from '@/hooks/entities/usePlayers';
 import { useEntityModals } from '@/hooks/common/useEntityModals';
 import type { Player } from '@/types/player.types';
@@ -34,12 +35,15 @@ function PlayersContent() {
     isCreateModalOpen,
     editingItem: editingPlayer,
     viewingItem: viewingPlayer,
+    carteirinhaItem: carteirinhaPlayer,
     openCreateModal,
     closeCreateModal,
     closeEditModal,
     closeDetailsModal,
+    closeCarteirinhaModal,
     handleEdit,
     handleViewDetails,
+    handleGerarCarteirinha,
   } = useEntityModals<Player>({ 
     items: filteredPlayers, 
     setActiveDropdown,
@@ -108,7 +112,7 @@ function PlayersContent() {
               onToggleDropdown={setActiveDropdown}
               onViewDetails={handleViewDetails}
               onEdit={handleEdit}
-              onToggleStatus={handleToggleStatus}
+              onGerarCarteirinha={handleGerarCarteirinha}
               onDelete={deletePlayer}
             />
           ))}
@@ -154,6 +158,15 @@ function PlayersContent() {
           }}
           initialData={editingPlayer}
           teamOptions={teamOptions}
+        />
+      )}
+
+      {/* Modal de Carteirinha */}
+      {carteirinhaPlayer && (
+        <ModalCarteirinha
+          isOpen={true}
+          onClose={closeCarteirinhaModal}
+          jogador={carteirinhaPlayer}
         />
       )}
     </div>

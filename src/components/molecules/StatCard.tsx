@@ -30,21 +30,24 @@ export function StatCard({
   gradientTo = 'to-blue-600'
 }: StatCardProps) {
   
-  // Variante gradient (com fundo colorido)
+  // Variante gradient (com fundo colorido) - ESTILO CLASSIFICAÇÃO
   if (variant === 'gradient') {
     return (
-      <div className={`bg-linear-to-br ${gradientFrom} ${gradientTo} rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-shadow`}>
-        <div className="flex items-start justify-between mb-4">
-          <div className="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
-            <Icon icon={icon} size={24} className="text-white" />
+      <div className={`bg-gradient-to-r ${gradientFrom} ${gradientTo} rounded-2xl p-5 text-white shadow-lg hover:shadow-xl transition-all duration-300`}>
+        <div className="flex items-center gap-3">
+          {/* Ícone com background branco semi-transparente */}
+          <div className="shrink-0 w-11 h-11 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+            <Icon icon={icon} size={20} className="text-white" />
           </div>
-        </div>
-        <div className="space-y-1">
-          <div className="text-3xl font-black">
-            {value}
-          </div>
-          <div className="text-white/90 text-sm font-medium">
-            {title}
+          
+          {/* Informações */}
+          <div className="flex-1 min-w-0">
+            <p className="text-white/90 text-[10px] font-bold uppercase tracking-widest mb-0.5">
+              {title}
+            </p>
+            <p className="text-2xl font-black text-white leading-none">
+              {value}
+            </p>
           </div>
         </div>
       </div>
@@ -55,40 +58,42 @@ export function StatCard({
   if (variant === 'compact') {
     // Se tiver gradiente, aplica fundo colorido
     const bgClass = gradientFrom && gradientTo 
-      ? `bg-gradient-to-br ${gradientFrom} ${gradientTo} text-white border-transparent`
-      : 'bg-white text-gray-900 border-gray-100';
+      ? `bg-gradient-to-r ${gradientFrom} ${gradientTo} text-white`
+      : 'bg-white text-gray-900 border border-gray-200';
     
     const iconBgClass = gradientFrom && gradientTo
       ? 'bg-white/20 backdrop-blur-sm'
-      : `${iconBgColor} bg-opacity-10`;
+      : 'bg-blue-50';
     
     const iconColorClass = gradientFrom && gradientTo
       ? 'text-white'
       : iconColor;
     
     const titleColorClass = gradientFrom && gradientTo
-      ? 'text-white/80'
-      : 'text-gray-500';
+      ? 'text-white/90'
+      : 'text-gray-600';
     
     const valueColorClass = gradientFrom && gradientTo
       ? 'text-white'
       : 'text-gray-900';
     
     return (
-      <div className={`rounded-xl p-4 shadow-sm border transition-all duration-200 hover:shadow-lg flex items-center gap-4 ${bgClass}`}>
-        {/* Ícone menor e lateral */}
-        <div className={`shrink-0 p-3 rounded-lg ${iconBgClass}`}>
-          <Icon icon={icon} size={20} className={iconColorClass} />
-        </div>
-        
-        {/* Informações alinhadas verticalmente */}
-        <div className="flex flex-col">
-          <span className={`text-xs font-semibold uppercase tracking-tight ${titleColorClass}`}>
-            {title}
-          </span>
-          <span className={`text-xl font-bold leading-tight ${valueColorClass}`}>
-            {value}
-          </span>
+      <div className={`rounded-2xl p-5 shadow-lg transition-all duration-300 hover:shadow-xl ${bgClass}`}>
+        <div className="flex items-center gap-3">
+          {/* Ícone */}
+          <div className={`shrink-0 w-11 h-11 rounded-xl flex items-center justify-center ${iconBgClass}`}>
+            <Icon icon={icon} size={20} className={iconColorClass} />
+          </div>
+          
+          {/* Informações */}
+          <div className="flex-1 min-w-0">
+            <p className={`text-[10px] font-bold uppercase tracking-widest mb-0.5 ${titleColorClass}`}>
+              {title}
+            </p>
+            <p className={`text-2xl font-black leading-none ${valueColorClass}`}>
+              {value}
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -96,19 +101,19 @@ export function StatCard({
 
   // Variante padrão (vertical com trend)
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+    <div className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-xl transition-all duration-300">
       <div className="flex items-center justify-between mb-4">
-        <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${iconBgColor}`}>
+        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${iconBgColor}`}>
           <Icon icon={icon} size={24} className={iconColor} />
         </div>
         {trend && (
-          <span className={`text-sm font-semibold ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+          <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${trend.isPositive ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50'}`}>
             {trend.isPositive ? '+' : ''}{trend.value}
           </span>
         )}
       </div>
-      <p className="text-gray-500 text-sm mb-1">{title}</p>
-      <p className="text-2xl font-bold text-gray-900">{value}</p>
+      <p className="text-gray-600 text-[10px] font-bold uppercase tracking-widest mb-2">{title}</p>
+      <p className="text-3xl font-black text-gray-900">{value}</p>
     </div>
   );
 }

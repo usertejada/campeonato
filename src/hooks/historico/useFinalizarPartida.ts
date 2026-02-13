@@ -49,11 +49,12 @@ export function useFinalizarPartida(isOpen: boolean, jogo: Jogo | null) {
     if (placarCasa > golsCasa.length) {
       const novosGols = Array(placarCasa - golsCasa.length)
         .fill(null)
-        .map(() => ({ jogador: '', minuto: undefined }));
+        .map(() => ({ jogador: '', jogadorId: '', minuto: undefined }));
       setGolsCasa([...golsCasa, ...novosGols]);
     } else if (placarCasa < golsCasa.length) {
       setGolsCasa(golsCasa.slice(0, placarCasa));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [placarCasa]);
 
   // Atualiza gols do time visitante baseado no placar
@@ -61,47 +62,58 @@ export function useFinalizarPartida(isOpen: boolean, jogo: Jogo | null) {
     if (placarVisitante > golsVisitante.length) {
       const novosGols = Array(placarVisitante - golsVisitante.length)
         .fill(null)
-        .map(() => ({ jogador: '', minuto: undefined }));
+        .map(() => ({ jogador: '', jogadorId: '', minuto: undefined }));
       setGolsVisitante([...golsVisitante, ...novosGols]);
     } else if (placarVisitante < golsVisitante.length) {
       setGolsVisitante(golsVisitante.slice(0, placarVisitante));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [placarVisitante]);
 
   // Funções para manipular gols
-  const atualizarGolCasa = (index: number, campo: 'jogador' | 'minuto', valor: string | number) => {
+  const atualizarGolCasa = (index: number, campo: 'jogador' | 'jogadorId' | 'minuto', valor: string | number) => {
     const novosGols = [...golsCasa];
     if (campo === 'jogador') {
       novosGols[index] = { ...novosGols[index], jogador: valor as string };
+    } else if (campo === 'jogadorId') {
+      novosGols[index] = { ...novosGols[index], jogadorId: valor as string };
     } else {
       novosGols[index] = { ...novosGols[index], minuto: valor ? Number(valor) : undefined };
     }
+    console.log('Atualizando gol casa:', { index, campo, valor, novosGols });
     setGolsCasa(novosGols);
   };
 
-  const atualizarGolVisitante = (index: number, campo: 'jogador' | 'minuto', valor: string | number) => {
+  const atualizarGolVisitante = (index: number, campo: 'jogador' | 'jogadorId' | 'minuto', valor: string | number) => {
     const novosGols = [...golsVisitante];
     if (campo === 'jogador') {
       novosGols[index] = { ...novosGols[index], jogador: valor as string };
+    } else if (campo === 'jogadorId') {
+      novosGols[index] = { ...novosGols[index], jogadorId: valor as string };
     } else {
       novosGols[index] = { ...novosGols[index], minuto: valor ? Number(valor) : undefined };
     }
+    console.log('Atualizando gol visitante:', { index, campo, valor, novosGols });
     setGolsVisitante(novosGols);
   };
 
   // Funções para manipular cartões
   const adicionarCartao = (tipo: 'amarelo' | 'vermelho') => {
-    setCartoes([...cartoes, { jogador: '', time: 'casa', tipo }]);
+    setCartoes([...cartoes, { jogador: '', jogadorId: '', time: 'casa', tipo }]);
   };
 
-  const atualizarCartao = (index: number, campo: 'jogador' | 'time', valor: string) => {
-    const novosCartoes = [...cartoes];
-    if (campo === 'jogador') {
-      novosCartoes[index] = { ...novosCartoes[index], jogador: valor };
-    } else {
-      novosCartoes[index] = { ...novosCartoes[index], time: valor as 'casa' | 'visitante' };
-    }
-    setCartoes(novosCartoes);
+  const atualizarCartao = (index: number, campo: 'jogador' | 'jogadorId' | 'time', valor: string) => {
+    setCartoes(prevCartoes => {
+      const novosCartoes = [...prevCartoes];
+      if (campo === 'jogador') {
+        novosCartoes[index] = { ...novosCartoes[index], jogador: valor };
+      } else if (campo === 'jogadorId') {
+        novosCartoes[index] = { ...novosCartoes[index], jogadorId: valor };
+      } else {
+        novosCartoes[index] = { ...novosCartoes[index], time: valor as 'casa' | 'visitante' };
+      }
+      return novosCartoes;
+    });
   };
 
   const removerCartao = (index: number) => {
@@ -110,15 +122,18 @@ export function useFinalizarPartida(isOpen: boolean, jogo: Jogo | null) {
 
   // Validação
   const validarDados = (): string | null => {
-    const golsCasaInvalidos = golsCasa.some(gol => !gol.jogador.trim());
-    const golsVisitanteInvalidos = golsVisitante.some(gol => !gol.jogador.trim());
+    // Verifica se todos os gols têm jogadorId (mais confiável que o nome)
+    const golsCasaInvalidos = golsCasa.some(gol => !gol.jogadorId || !gol.jogadorId.trim());
+    const golsVisitanteInvalidos = golsVisitante.some(gol => !gol.jogadorId || !gol.jogadorId.trim());
 
     if (golsCasaInvalidos || golsVisitanteInvalidos) {
+      console.log('Gols inválidos detectados:', { golsCasa, golsVisitante });
       return 'Por favor, selecione os jogadores que fizeram os gols';
     }
 
-    const cartoesInvalidos = cartoes.some(cartao => !cartao.jogador.trim());
+    const cartoesInvalidos = cartoes.some(cartao => !cartao.jogadorId || !cartao.jogadorId.trim());
     if (cartoesInvalidos) {
+      console.log('Cartões inválidos detectados:', cartoes);
       return 'Por favor, selecione os jogadores que receberam cartões';
     }
 

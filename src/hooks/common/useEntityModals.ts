@@ -17,6 +17,7 @@ export function useEntityModals<T extends Record<string, any>>({
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<T | null>(null);
   const [viewingItem, setViewingItem] = useState<T | null>(null);
+  const [carteirinhaItem, setCarteirinhaItem] = useState<T | null>(null);
 
   // Função auxiliar para buscar item pelo ID
   const findItemById = (id: string): T | undefined => {
@@ -71,11 +72,31 @@ export function useEntityModals<T extends Record<string, any>>({
     setActiveDropdown(null);
   };
 
+  // ========== MODAIS DE CARTEIRINHA ==========
+  const openCarteirinhaModal = (item: T) => {
+    console.log(`🎫 Gerando carteirinha de ${entityName}:`, item[idKey]);
+    setCarteirinhaItem(item);
+  };
+
+  const closeCarteirinhaModal = () => {
+    setCarteirinhaItem(null);
+  };
+
+  // Handler completo: busca o item e abre modal
+  const handleGerarCarteirinha = (id: string) => {
+    const item = findItemById(id);
+    if (item) {
+      openCarteirinhaModal(item);
+    }
+    setActiveDropdown(null);
+  };
+
   return {
     // Estados
     isCreateModalOpen,
     editingItem,
     viewingItem,
+    carteirinhaItem,
     
     // Funções de controle direto
     openCreateModal,
@@ -84,9 +105,12 @@ export function useEntityModals<T extends Record<string, any>>({
     closeEditModal,
     openDetailsModal,
     closeDetailsModal,
+    openCarteirinhaModal,
+    closeCarteirinhaModal,
     
     // Handlers prontos (com busca automática)
     handleEdit,
     handleViewDetails,
+    handleGerarCarteirinha,
   };
 }

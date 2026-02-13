@@ -80,7 +80,9 @@ function CampeonatosContent() {
             icon={card.icon}
             iconColor={card.iconColor}
             iconBgColor={card.iconBgColor}
-            variant="compact"
+            variant="gradient"
+            gradientFrom={card.gradientFrom}
+            gradientTo={card.gradientTo}
           />
         ))}
       </div>

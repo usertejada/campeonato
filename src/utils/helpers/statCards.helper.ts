@@ -7,6 +7,8 @@ export interface StatCardConfig {
   iconBgColor: string;
   label: string;
   value: number;
+  gradientFrom?: string;
+  gradientTo?: string;
 }
 
 /**
@@ -17,7 +19,9 @@ export function createStatCard(
   icon: LucideIcon,
   label: string,
   value: number,
-  color: 'blue' | 'green' | 'red' | 'orange' | 'purple' | 'yellow' | 'gray'
+  color: 'blue' | 'green' | 'red' | 'orange' | 'purple' | 'yellow' | 'gray',
+  gradientFrom?: string,
+  gradientTo?: string
 ): StatCardConfig {
   const colorMap = {
     blue: { text: 'text-blue-600', bg: 'bg-blue-50' },
@@ -37,6 +41,8 @@ export function createStatCard(
     iconBgColor: colors.bg,
     label,
     value,
+    gradientFrom,
+    gradientTo,
   };
 }
 
@@ -57,10 +63,10 @@ interface ChampionshipStats {
  */
 export function getChampionshipStatCards(stats: ChampionshipStats): StatCardConfig[] {
   return [
-    createStatCard(Trophy, 'Total', stats.total, 'blue'),
-    createStatCard(Power, 'Ativos', stats.active, 'green'),
-    createStatCard(Power, 'Inativos', stats.inactive, 'red'),
-    createStatCard(X, 'Bloqueados', stats.blocked, 'orange'),
+    createStatCard(Trophy, 'Total', stats.total, 'blue', 'from-blue-500', 'to-blue-600'),
+    createStatCard(Power, 'Ativos', stats.active, 'green', 'from-green-500', 'to-green-600'),
+    createStatCard(Power, 'Inativos', stats.inactive, 'yellow', 'from-yellow-400', 'to-yellow-500'),
+    createStatCard(X, 'Bloqueados', stats.blocked, 'red', 'from-red-500', 'to-red-600'),
   ];
 }
 

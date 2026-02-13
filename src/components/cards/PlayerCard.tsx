@@ -1,7 +1,8 @@
 // src/components/cards/PlayerCard.tsx
-import React from 'react';
-import { Shield, ChevronRight, Settings, Eye, Edit, Power, Trash2, Award } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { Shield, ChevronRight, Settings, Eye, Edit, Trash2, CreditCard } from 'lucide-react';
 import { Icon } from '../atoms/Icon';
+import { playerStatsService } from '@/services/playerStatsService';
 import type { DropdownMenuItem } from '../molecules/DropdownMenu';
 
 interface PlayerCardProps {
@@ -19,7 +20,7 @@ interface PlayerCardProps {
   onToggleDropdown: (id: string | null) => void;
   onViewDetails: (id: string) => void;
   onEdit: (id: string) => void;
-  onToggleStatus: (id: string) => void;
+  onGerarCarteirinha: (id: string) => void;
   onDelete: (id: string) => void;
 }
 
@@ -38,7 +39,7 @@ export function PlayerCard({
   onToggleDropdown,
   onViewDetails,
   onEdit,
-  onToggleStatus,
+  onGerarCarteirinha,
   onDelete,
 }: PlayerCardProps) {
   
@@ -48,19 +49,19 @@ export function PlayerCard({
   // Itens do menu dropdown
   const dropdownItems: DropdownMenuItem[] = [
     {
-      label: 'Editar',
-      icon: Edit,
-      onClick: () => onEdit(id),
-    },
-    {
       label: 'Ver Detalhes',
       icon: Eye,
       onClick: () => onViewDetails(id),
     },
     {
-      label: isActive ? 'Desativar' : 'Ativar',
-      icon: Power,
-      onClick: () => onToggleStatus(id),
+      label: 'Editar',
+      icon: Edit,
+      onClick: () => onEdit(id),
+    },
+    {
+      label: 'Gerar Carteirinha',
+      icon: CreditCard,
+      onClick: () => onGerarCarteirinha(id),
       divider: true,
     },
     {
@@ -71,9 +72,13 @@ export function PlayerCard({
     },
   ];
 
-  // Dados fictícios de cartões (você pode adicionar isso no Player type depois)
-  const yellowCards = 4;
-  const redCards = 0;
+  // Calcula estatísticas reais do jogador
+  const stats = useMemo(() => {
+    return playerStatsService.calcularEstatisticas(id);
+  }, [id]);
+
+  const yellowCards = stats.cartoesAmarelos;
+  const redCards = stats.cartoesVermelhos;
 
   return (
     <div className="w-full max-w-95 bg-white rounded-3xl shadow-2xl overflow-hidden border border-zinc-200">

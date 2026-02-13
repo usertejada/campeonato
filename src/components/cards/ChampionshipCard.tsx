@@ -89,7 +89,7 @@ export function ChampionshipCard({
       />
 
       {/* Header com fundo azul claro */}
-      <div className="bg-blue-100 rounded-xl p-5 relative overflow-hidden">
+      <div className="rounded-xl p-5 relative overflow-hidden">
         <div className="relative z-10">
           <div className="flex justify-between items-start mb-4">
             {/* Logo */}
@@ -109,7 +109,7 @@ export function ChampionshipCard({
       </div>
 
       {/* Body do card */}
-      <div className="p-5 space-y-4">
+      <div className="p-5 space-y-4 bg-blue-100 ">
         {/* Badge de categoria com variante personalizável */}
         <div className="flex flex-wrap gap-2">
           <Badge variant={categoryBadgeVariant} color={categoryBadgeColor}>
@@ -118,7 +118,7 @@ export function ChampionshipCard({
         </div>
         
         {/* Informações */}
-        <div className="bg-gray-50 rounded-2xl p-4 space-y-3">
+        <div className="bg-blue-100 rounded-2xl p-4 space-y-3">
           <div className="flex items-center gap-3">
             <Icon icon={Users} size={16} className="text-blue-500" />
             <span className="text-sm text-gray-600 font-medium">{teams} times inscritos</span>

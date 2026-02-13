@@ -10,7 +10,7 @@ interface ListaGolsProps {
   titulo: string;
   gols: Gol[];
   jogadores: Player[];
-  onAtualizarGol: (index: number, campo: 'jogador' | 'minuto', valor: string | number) => void;
+  onAtualizarGol: (index: number, campo: 'jogador' | 'jogadorId' | 'minuto', valor: string | number) => void;
 }
 
 export function ListaGols({ titulo, gols, jogadores, onAtualizarGol }: ListaGolsProps) {
@@ -40,35 +40,57 @@ export function ListaGols({ titulo, gols, jogadores, onAtualizarGol }: ListaGols
       <h3 className="font-semibold text-gray-900 flex items-center gap-2">
         ⚽ {titulo}
       </h3>
-      {gols.map((gol, index) => (
-        <div key={index} className="grid grid-cols-3 gap-3 p-3 bg-gray-50 rounded-lg">
-          <div className="col-span-2">
-            <CustomSelect
-              label={`Jogador ${index + 1}º gol`}
-              value={gol.jogador}
-              onChange={(valor) => {
-                // Extrai apenas o nome (remove o número da camisa)
-                const nome = valor.replace(/\s*\(#\d+\)$/, '');
-                onAtualizarGol(index, 'jogador', nome);
-              }}
-              options={opcoesJogadores}
-              placeholder="Selecione o jogador"
-              required
-            />
+      {gols.map((gol, index) => {
+        // Reconstrói o valor para exibição com base no jogadorId
+        const valorExibicao = gol.jogadorId 
+          ? (() => {
+              const jogador = jogadores.find(j => j.id === gol.jogadorId);
+              return jogador ? `${jogador.name} (#${jogador.shirtNumber})` : '';
+            })()
+          : '';
+
+        return (
+          <div key={index} className="grid grid-cols-3 gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="col-span-2">
+              <CustomSelect
+                label={`Jogador ${index + 1}º gol`}
+                value={valorExibicao}
+                onChange={(valor) => {
+                  console.log('Select onChange chamado:', valor);
+                  // Busca o jogador completo pela string "Nome (#Numero)"
+                  const jogadorEncontrado = jogadores.find(j => `${j.name} (#${j.shirtNumber})` === valor);
+                  
+                  if (jogadorEncontrado) {
+                    console.log('Jogador encontrado:', jogadorEncontrado);
+                    // Atualiza primeiro o nome
+                    onAtualizarGol(index, 'jogador', jogadorEncontrado.name);
+                    // Depois atualiza o ID em uma microtask separada para garantir que ambas aconteçam
+                    setTimeout(() => {
+                      onAtualizarGol(index, 'jogadorId', jogadorEncontrado.id);
+                    }, 0);
+                  } else {
+                    console.log('Jogador NÃO encontrado para:', valor);
+                  }
+                }}
+                options={opcoesJogadores}
+                placeholder="Selecione o jogador"
+                required
+              />
+            </div>
+            <div>
+              <Input
+                label="Minuto"
+                type="number"
+                placeholder="Ex: 45"
+                value={gol.minuto || ''}
+                onChange={(e) => onAtualizarGol(index, 'minuto', e.target.value)}
+                min={0}
+                max={120}
+              />
+            </div>
           </div>
-          <div>
-            <Input
-              label="Minuto"
-              type="number"
-              placeholder="Ex: 45"
-              value={gol.minuto || ''}
-              onChange={(e) => onAtualizarGol(index, 'minuto', e.target.value)}
-              min={0}
-              max={120}
-            />
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

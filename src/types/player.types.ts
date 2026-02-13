@@ -13,4 +13,8 @@ export interface Player {
   documentPhoto: string;
   shirtNumber: number;
   isActive?: boolean;
+  // Documentos de identificação
+  rg?: string;
+  cpf?: string;
+  documentType?: 'rg' | 'cpf'; // Qual documento está ativo/selecionado
 }

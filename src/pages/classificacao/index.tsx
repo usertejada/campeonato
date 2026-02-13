@@ -26,7 +26,7 @@ function ClassificacaoContent() {
     setIsMounted(true);
   }, []);
 
-  // Calcula estatísticas gerais
+  // Calcula estatísticas geraiss
   const totalTimes = classificacao.length;
   const totalJogos = classificacao.reduce((sum, stat) => sum + stat.jogos, 0) / 2; // Divide por 2 pois cada jogo conta para 2 times
   const totalGols = classificacao.reduce((sum, stat) => sum + stat.golsPro, 0);
@@ -75,7 +75,7 @@ function ClassificacaoContent() {
 
       {/* Filtro de Campeonato */}
       {isMounted && (
-        <FilterBar
+        <FilterBar className='text-gray-800'
           searchValue=""
           onSearchChange={() => {}}
           searchPlaceholder="Buscar times..."

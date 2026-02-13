@@ -13,7 +13,7 @@ interface SecaoCartoesProps {
   jogadoresTimeCasa: Player[];
   jogadoresTimeVisitante: Player[];
   onAdicionarCartao: (tipo: 'amarelo' | 'vermelho') => void;
-  onAtualizarCartao: (index: number, campo: 'jogador' | 'time', valor: string) => void;
+  onAtualizarCartao: (index: number, campo: 'jogador' | 'jogadorId' | 'time', valor: string) => void;
   onRemoverCartao: (index: number) => void;
 }
 
@@ -37,6 +37,9 @@ export function SecaoCartoes({
     const jogadores = obterJogadoresDoTime(timeCartao);
     return jogadores.map(j => `${j.name} (#${j.shirtNumber})`);
   };
+
+  // Opções de times
+  const opcoesTimes = [jogo.timeCasa.nome, jogo.timeVisitante.nome];
 
   return (
     <div className="space-y-3">
@@ -65,8 +68,8 @@ export function SecaoCartoes({
       {cartoes.length > 0 ? (
         <div className="space-y-2">
           {cartoes.map((cartao, index) => {
-            const opcoesJogadores = obterOpcoesJogadores(cartao.time);
             const jogadoresDisponiveis = obterJogadoresDoTime(cartao.time);
+            const opcoesJogadores = obterOpcoesJogadores(cartao.time);
 
             return (
               <div key={index} className="flex items-end gap-3 p-3 bg-gray-50 rounded-lg">
@@ -80,21 +83,18 @@ export function SecaoCartoes({
                 
                 {/* Select do Time */}
                 <div className="flex-1">
-                  <label className="block text-[12px] font-medium text-gray-500 mb-1 ml-0.5">
-                    Time
-                  </label>
-                  <select
-                    value={cartao.time}
-                    onChange={(e) => {
+                  <CustomSelect
+                    label="Time"
+                    value={cartao.time === 'casa' ? jogo.timeCasa.nome : jogo.timeVisitante.nome}
+                    onChange={(valor) => {
+                      const novoTime = valor === jogo.timeCasa.nome ? 'casa' : 'visitante';
                       // Ao mudar de time, limpa o jogador selecionado
-                      onAtualizarCartao(index, 'time', e.target.value);
+                      onAtualizarCartao(index, 'time', novoTime);
                       onAtualizarCartao(index, 'jogador', '');
                     }}
-                    className="w-full px-3 py-2 bg-gray-100/50 border border-gray-300 focus:border-blue-400 focus:bg-white rounded-xl text-[14px] text-gray-900 outline-none transition-all"
-                  >
-                    <option value="casa">{jogo.timeCasa.nome}</option>
-                    <option value="visitante">{jogo.timeVisitante.nome}</option>
-                  </select>
+                    options={opcoesTimes}
+                    required
+                  />
                 </div>
 
                 {/* Select do Jogador */}
@@ -102,11 +102,28 @@ export function SecaoCartoes({
                   {jogadoresDisponiveis.length > 0 ? (
                     <CustomSelect
                       label="Jogador"
-                      value={cartao.jogador ? `${cartao.jogador} (#${jogadoresDisponiveis.find(j => j.name === cartao.jogador)?.shirtNumber || ''})` : ''}
+                      value={
+                        cartao.jogadorId
+                          ? (() => {
+                              const jogador = jogadoresDisponiveis.find(j => j.id === cartao.jogadorId);
+                              return jogador ? `${jogador.name} (#${jogador.shirtNumber})` : '';
+                            })()
+                          : ''
+                      }
                       onChange={(valor) => {
-                        // Extrai apenas o nome (remove o número da camisa)
-                        const nome = valor.replace(/\s*\(#\d+\)$/, '');
-                        onAtualizarCartao(index, 'jogador', nome);
+                        console.log('Select cartão onChange:', valor);
+                        // Busca o jogador pelo formato completo
+                        const jogadorEncontrado = jogadoresDisponiveis.find(j => `${j.name} (#${j.shirtNumber})` === valor);
+                        
+                        if (jogadorEncontrado) {
+                          console.log('Jogador do cartão encontrado:', jogadorEncontrado);
+                          onAtualizarCartao(index, 'jogador', jogadorEncontrado.name);
+                          setTimeout(() => {
+                            onAtualizarCartao(index, 'jogadorId', jogadorEncontrado.id);
+                          }, 0);
+                        } else {
+                          console.log('Jogador do cartão NÃO encontrado:', valor);
+                        }
                       }}
                       options={opcoesJogadores}
                       placeholder="Selecione o jogador"
