@@ -1,8 +1,8 @@
 // ========================================
 // src/components/modals/players/CreatePlayerModal.tsx
 // ========================================
-import React, { useState } from 'react';
-import { User, Phone, Calendar, Save, Shield, Hash, Globe, FileText } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, Calendar, Save, Hash, FileText } from 'lucide-react';
 import { Modal } from '@/components/molecules/Modal';
 import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/molecules/Button';
@@ -10,10 +10,18 @@ import { CustomSelect } from '@/components/atoms/CustomSelect';
 import { ImageUpload } from '@/components/atoms/ImageUpload';
 import { Checkbox } from '@/components/atoms/Checkbox';
 import { InfoTooltip } from '@/components/atoms/InfoTooltip';
-import { formatPhone } from '@/utils/formatters/inputFormatters';
+import { PhoneInput } from '@/components/atoms/PhoneInput';
 import { formatCPF, formatRG, validateCPF, validateRG, getDocumentErrorMessage } from '@/utils/validators/documentValidators';
+import { formatPhoneByCode } from '@/config/countryConfig';
 import { playerService } from '@/services/playerService';
-import type { Player } from '@/types/player.types';
+import type { Player, DocumentType } from '@/types/player.types';
+import { 
+  getDocumentsByNationality, 
+  getDefaultDocumentType,
+  formatDocumentValue,
+  getDocumentError,
+  type DocumentConfig
+} from '@/config/documentConfig';
 
 interface CreatePlayerModalProps {
   isOpen: boolean;
@@ -37,6 +45,7 @@ export function CreatePlayerModal({
     teamId: string;
     position: string;
     phone: string;
+    phoneCode: string;
     nationality: string;
     birthDate: string;
     documentPhoto: string;
@@ -44,7 +53,9 @@ export function CreatePlayerModal({
     isActive: boolean;
     rg: string;
     cpf: string;
-    documentType: 'rg' | 'cpf';
+    dni_colombia: string;
+    dni_peru: string;
+    documentType: DocumentType | null;
   }>({
     name: initialData?.name || '',
     photo: initialData?.photo || '',
@@ -52,69 +63,95 @@ export function CreatePlayerModal({
     teamId: initialData?.teamId || '',
     position: initialData?.position || '',
     phone: initialData?.phone || '',
-    nationality: initialData?.nationality || '',
+    phoneCode: initialData?.phoneCode || '+55',
+    nationality: initialData?.nationality || 'Brasileiro',
     birthDate: initialData?.birthDate || '',
     documentPhoto: initialData?.documentPhoto || '',
     shirtNumber: initialData?.shirtNumber || 0,
     isActive: initialData?.isActive ?? true,
     rg: initialData?.rg || '',
     cpf: initialData?.cpf || '',
+    dni_colombia: initialData?.dni_colombia || '',
+    dni_peru: initialData?.dni_peru || '',
     documentType: initialData?.documentType || 'cpf',
   });
 
+  // Documentos disponíveis baseados na nacionalidade
+  const [availableDocuments, setAvailableDocuments] = useState<DocumentConfig[]>([]);
+  
   // Estados para erros de validação
-  const [cpfError, setCpfError] = useState<string | null>(null);
-  const [rgError, setRgError] = useState<string | null>(null);
+  const [documentErrors, setDocumentErrors] = useState<Record<string, string | null>>({});
 
-  // Handler para mudança de CPF
-  const handleCPFChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatCPF(e.target.value);
-    setFormData(prev => ({ ...prev, cpf: formatted }));
-    
-    // Valida em tempo real
-    if (formatted.length >= 14) {
-      const error = getDocumentErrorMessage('cpf', formatted);
-      setCpfError(error);
-    } else {
-      setCpfError(null);
+  // Atualiza documentos disponíveis quando a nacionalidade muda
+  useEffect(() => {
+    if (formData.nationality) {
+      const documents = getDocumentsByNationality(formData.nationality);
+      setAvailableDocuments(documents);
+      
+      // Se não há documento selecionado ou o documento atual não é válido para a nova nacionalidade
+      const currentDocTypeValid = documents.some(doc => doc.type === formData.documentType);
+      
+      if (!formData.documentType || !currentDocTypeValid) {
+        const defaultDocType = getDefaultDocumentType(formData.nationality);
+        setFormData(prev => ({ 
+          ...prev, 
+          documentType: defaultDocType,
+          // Limpa todos os documentos ao mudar de nacionalidade
+          rg: '',
+          cpf: '',
+          dni_colombia: '',
+          dni_peru: '',
+        }));
+        setDocumentErrors({});
+      }
     }
+  }, [formData.nationality]);
+
+  // Handler genérico para mudança de documento
+  const handleDocumentChange = (docType: DocumentType, value: string) => {
+    let formattedValue = value;
+
+    // Aplica formatação específica
+    if (docType === 'cpf') {
+      formattedValue = formatCPF(value);
+    } else if (docType === 'rg') {
+      formattedValue = formatRG(value);
+    } else {
+      formattedValue = formatDocumentValue(docType, value);
+    }
+
+    setFormData(prev => ({ ...prev, [docType]: formattedValue }));
+
+    // Valida em tempo real
+    let error: string | null = null;
+    
+    if (docType === 'cpf' && formattedValue.length >= 14) {
+      error = getDocumentErrorMessage('cpf', formattedValue);
+    } else if (docType === 'rg' && formattedValue.length >= 10) {
+      error = getDocumentErrorMessage('rg', formattedValue);
+    } else if (formattedValue) {
+      error = getDocumentError(docType, formattedValue);
+    }
+
+    setDocumentErrors(prev => ({ ...prev, [docType]: error }));
   };
 
-  // Handler para mudança de RG
-  const handleRGChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatRG(e.target.value);
-    setFormData(prev => ({ ...prev, rg: formatted }));
-    
-    // Valida em tempo real
-    if (formatted.length >= 10) {
-      const error = getDocumentErrorMessage('rg', formatted);
-      setRgError(error);
-    } else {
-      setRgError(null);
-    }
-  };
-
-  // Handler para checkbox do CPF
-  const handleCPFCheckboxChange = (checked: boolean) => {
+  // Handler para checkbox do documento
+  const handleDocumentCheckboxChange = (docType: DocumentType, checked: boolean) => {
     if (checked) {
       setFormData(prev => ({ 
         ...prev, 
-        documentType: 'cpf',
-        rg: '' // Limpa RG quando seleciona CPF
+        documentType: docType,
       }));
-      setRgError(null);
-    }
-  };
-
-  // Handler para checkbox do RG
-  const handleRGCheckboxChange = (checked: boolean) => {
-    if (checked) {
-      setFormData(prev => ({ 
-        ...prev, 
-        documentType: 'rg',
-        cpf: '' // Limpa CPF quando seleciona RG
-      }));
-      setCpfError(null);
+      
+      // Limpa erros de outros documentos
+      const newErrors = { ...documentErrors };
+      availableDocuments.forEach(doc => {
+        if (doc.type !== docType) {
+          newErrors[doc.type] = null;
+        }
+      });
+      setDocumentErrors(newErrors);
     }
   };
 
@@ -122,27 +159,52 @@ export function CreatePlayerModal({
     e.preventDefault();
     
     // Validação: pelo menos um documento deve estar preenchido
-    if (!formData.cpf && !formData.rg) {
-      alert('Por favor, preencha pelo menos um documento (CPF ou RG)');
+    const hasDocument = availableDocuments.some(doc => {
+      const value = formData[doc.type as keyof typeof formData];
+      return value && typeof value === 'string' && value.trim() !== '';
+    });
+
+    if (!hasDocument) {
+      alert('Por favor, preencha pelo menos um documento');
       return;
     }
     
     // Validação do documento ativo
-    if (formData.documentType === 'cpf' && formData.cpf) {
-      if (!validateCPF(formData.cpf)) {
-        setCpfError('CPF inválido');
-        return;
+    if (formData.documentType) {
+      const documentValue = formData[formData.documentType];
+      
+      if (formData.documentType === 'cpf' && documentValue) {
+        if (!validateCPF(documentValue)) {
+          setDocumentErrors(prev => ({ ...prev, cpf: 'CPF inválido' }));
+          return;
+        }
+      }
+      
+      if (formData.documentType === 'rg' && documentValue) {
+        if (!validateRG(documentValue)) {
+          setDocumentErrors(prev => ({ ...prev, rg: 'RG inválido' }));
+          return;
+        }
+      }
+
+      if (formData.documentType === 'dni_colombia' && documentValue) {
+        const error = getDocumentError('dni_colombia', documentValue);
+        if (error) {
+          setDocumentErrors(prev => ({ ...prev, dni_colombia: error }));
+          return;
+        }
+      }
+
+      if (formData.documentType === 'dni_peru' && documentValue) {
+        const error = getDocumentError('dni_peru', documentValue);
+        if (error) {
+          setDocumentErrors(prev => ({ ...prev, dni_peru: error }));
+          return;
+        }
       }
     }
     
-    if (formData.documentType === 'rg' && formData.rg) {
-      if (!validateRG(formData.rg)) {
-        setRgError('RG inválido');
-        return;
-      }
-    }
-    
-    onSubmit(formData);
+    onSubmit(formData as Omit<Player, 'id'>);
     onClose();
   };
 
@@ -267,17 +329,19 @@ export function CreatePlayerModal({
         {/* Details Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           
-          <Input
+          <PhoneInput
             label="Telefone"
-            type="tel"
-            placeholder="(99) 99999-9999"
             value={formData.phone}
             onChange={(e) => {
-              const formatted = formatPhone(e.target.value);
+              const formatted = formatPhoneByCode(e.target.value, formData.phoneCode);
               setFormData(prev => ({ ...prev, phone: formatted }));
             }}
+            phoneCode={formData.phoneCode}
+            onPhoneCodeChange={(code) => {
+              // Ao mudar o código do país, limpa o telefone para reformatar
+              setFormData(prev => ({ ...prev, phoneCode: code, phone: '' }));
+            }}
             required
-            leftIcon={Phone}
           />
 
           <CustomSelect
@@ -315,54 +379,38 @@ export function CreatePlayerModal({
         {/* Divisor */}
         <div className="h-px bg-gray-200" />
 
-        {/* Documentos - RG e CPF com Checkboxes */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-gray-700">
-            Documentos de Identificação
-            <span className="text-red-400 ml-1">*</span>
-          </h3>
-          <p className="text-xs text-gray-500">Selecione e preencha pelo menos um documento</p>
+        {/* Documentos - Dinâmicos baseados na nacionalidade */}
+        {availableDocuments.length > 0 && (
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-gray-700">
+              Documentos de Identificação
+              <span className="text-red-400 ml-1">*</span>
+            </h3>
+            <p className="text-xs text-gray-500">Selecione e preencha pelo menos um documento</p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* CPF */}
-            <div className="space-y-2">
-              <Checkbox
-                label="CPF"
-                checked={formData.documentType === 'cpf'}
-                onChange={handleCPFCheckboxChange}
-                size="md"
-              />
-              <Input
-                type="text"
-                placeholder="000.000.000-00"
-                value={formData.cpf}
-                onChange={handleCPFChange}
-                disabled={formData.documentType !== 'cpf'}
-                leftIcon={FileText}
-                error={cpfError || undefined}
-              />
-            </div>
-
-            {/* RG */}
-            <div className="space-y-2">
-              <Checkbox
-                label="RG"
-                checked={formData.documentType === 'rg'}
-                onChange={handleRGCheckboxChange}
-                size="md"
-              />
-              <Input
-                type="text"
-                placeholder="00.000.000-0"
-                value={formData.rg}
-                onChange={handleRGChange}
-                disabled={formData.documentType !== 'rg'}
-                leftIcon={FileText}
-                error={rgError || undefined}
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {availableDocuments.map((doc) => (
+                <div key={doc.type} className="space-y-2">
+                  <Checkbox
+                    label={doc.label}
+                    checked={formData.documentType === doc.type}
+                    onChange={(checked) => handleDocumentCheckboxChange(doc.type, checked)}
+                    size="md"
+                  />
+                  <Input
+                    type="text"
+                    placeholder={doc.placeholder}
+                    value={formData[doc.type] || ''}
+                    onChange={(e) => handleDocumentChange(doc.type, e.target.value)}
+                    disabled={formData.documentType !== doc.type}
+                    leftIcon={FileText}
+                    error={documentErrors[doc.type] || undefined}
+                  />
+                </div>
+              ))}
             </div>
           </div>
-        </div>
+        )}
 
         {/* Footer Actions */}
         <footer className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">

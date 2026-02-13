@@ -7,6 +7,7 @@ export interface Championship {
   organizer: string;
   local: string;
   phone?: string;
+  phoneCode?: string; // Código do país (ex: '+55', '+57', '+51')
   category: 'Masculino Livre' | 'Feminino Livre' | 'Veterano 35+' | 'Sub-13' | 'Sub-15';
   status: 'Agendado' | 'Em Andamento' | 'Finalizado' | 'Inativo' | 'Bloqueado';
   format: 'Pontos Corridos' | 'Chaveamento';

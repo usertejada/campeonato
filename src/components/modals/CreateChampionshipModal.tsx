@@ -2,13 +2,14 @@
 // src/components/forms/CreateChampionshipModal.tsx
 // ========================================
 import React, { useState } from 'react';
-import { Trophy, Users, Calendar, Building2, MapPin, Phone, Save } from 'lucide-react';
+import { Trophy, Users, Calendar, Building2, MapPin, Save } from 'lucide-react';
 import { Modal } from '../molecules/Modal';
 import { Input } from '../atoms/Input';
 import { Button } from '../molecules/Button';
 import { CustomSelect } from '../atoms/CustomSelect';
 import { ImageUpload } from '../atoms/ImageUpload';
-import { formatPhone } from '../../utils/formatters/inputFormatters';
+import { PhoneInput } from '../atoms/PhoneInput';
+import { formatPhoneByCode } from '@/config/countryConfig';
 import type { Championship } from '../../types/championship.types';
 
 interface CreateChampionshipModalProps {
@@ -30,6 +31,7 @@ export function CreateChampionshipModal({
     organizer: string;
     local: string;
     phone: string;
+    phoneCode: string;
     category: 'Masculino Livre' | 'Feminino Livre' | 'Veterano 35+' | 'Sub-13' | 'Sub-15';
     status: 'Agendado' | 'Em Andamento' | 'Finalizado' | 'Inativo' | 'Bloqueado';
     format: 'Pontos Corridos' | 'Chaveamento';
@@ -42,6 +44,7 @@ export function CreateChampionshipModal({
     organizer: initialData?.organizer || '',
     local: initialData?.local || '',
     phone: initialData?.phone || '',
+    phoneCode: initialData?.phoneCode || '+55',
     category: initialData?.category || 'Masculino Livre',
     status: initialData?.status || 'Agendado',
     format: initialData?.format || 'Pontos Corridos',
@@ -116,16 +119,17 @@ export function CreateChampionshipModal({
               leftIcon={MapPin}
             />
             
-            <Input
+            <PhoneInput
               label="Telefone"
-              type="tel"
-              placeholder="(99) 99999-9999"
               value={formData.phone}
               onChange={(e) => {
-                const formatted = formatPhone(e.target.value);
+                const formatted = formatPhoneByCode(e.target.value, formData.phoneCode);
                 setFormData(prev => ({ ...prev, phone: formatted }));
               }}
-              leftIcon={Phone}
+              phoneCode={formData.phoneCode}
+              onPhoneCodeChange={(code) => {
+                setFormData(prev => ({ ...prev, phoneCode: code, phone: '' }));
+              }}
             />
           </div>
         </div>

@@ -85,6 +85,7 @@ export function TeamDetailsModal({
 
           {team.phone && (
             <IOSValue icon={<Icon icon={Phone} size={14} className="text-gray-400" />}>
+              {team.phoneCode && <span className="text-gray-600">{team.phoneCode} </span>}
               {team.phone}
             </IOSValue>
           )}

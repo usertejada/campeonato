@@ -1,5 +1,7 @@
 // src/types/player.types.ts
 
+export type DocumentType = 'rg' | 'cpf' | 'dni_colombia' | 'dni_peru';
+
 export interface Player {
   id: string;
   name: string;
@@ -8,6 +10,7 @@ export interface Player {
   teamName: string;
   position: string;
   phone: string;
+  phoneCode: string; // Código do país (ex: '+55', '+57', '+51')
   nationality: string;
   birthDate: string;
   documentPhoto: string;
@@ -16,5 +19,7 @@ export interface Player {
   // Documentos de identificação
   rg?: string;
   cpf?: string;
-  documentType?: 'rg' | 'cpf'; // Qual documento está ativo/selecionado
+  dni_colombia?: string;
+  dni_peru?: string;
+  documentType?: DocumentType; // Qual documento está ativo/selecionado
 }

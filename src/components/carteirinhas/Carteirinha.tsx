@@ -16,7 +16,7 @@ export function Carteirinha({ jogador, time, campeonato, lado }: CarteirinhaProp
   if (lado === 'frente') {
     return (
       <div 
-        className="w-[350px] h-[220px] bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl shadow-2xl overflow-hidden relative"
+        className="w-87.5 h-55 bg-linear-to-br from-blue-600 to-blue-800 rounded-xl shadow-2xl overflow-hidden relative"
         style={{
           WebkitPrintColorAdjust: 'exact',
           printColorAdjust: 'exact',
@@ -52,7 +52,7 @@ export function Carteirinha({ jogador, time, campeonato, lado }: CarteirinhaProp
           {/* Cabeçalho */}
           <div className="flex items-start gap-3 mb-5">
             {/* Logo no canto esquerdo */}
-            <div className="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden flex-shrink-0">
+            <div className="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden shrink-0">
               {campeonato.logo.startsWith('http') || campeonato.logo.startsWith('/') || campeonato.logo.startsWith('data:') ? (
                 <img src={campeonato.logo} alt="Logo" className="w-full h-full object-cover" />
               ) : (
@@ -71,7 +71,7 @@ export function Carteirinha({ jogador, time, campeonato, lado }: CarteirinhaProp
             </div>
 
             {/* Espaço para manter simetria (invisível) */}
-            <div className="w-11 h-11 flex-shrink-0"></div>
+            <div className="w-11 h-11 shrink-0"></div>
           </div>
 
           {/* Corpo */}
@@ -81,7 +81,7 @@ export function Carteirinha({ jogador, time, campeonato, lado }: CarteirinhaProp
               {jogador.photo && jogador.photo.length > 5 ? (
                 <img src={jogador.photo} alt={jogador.name} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                <div className="w-full h-full bg-linear-to-br from-gray-200 to-gray-300 flex items-center justify-center">
                   <span className="text-gray-600 font-bold text-2xl">
                     {jogador.name.substring(0, 2).toUpperCase()}
                   </span>
@@ -105,10 +105,16 @@ export function Carteirinha({ jogador, time, campeonato, lado }: CarteirinhaProp
                 </div>
                 <div>
                   <p className="text-[9px] text-blue-200 uppercase tracking-wide">
-                    {jogador.documentType === 'cpf' ? 'CPF' : 'RG'}
+                    {jogador.documentType === 'cpf' ? 'CPF' : 
+                     jogador.documentType === 'rg' ? 'RG' :
+                     jogador.documentType === 'dni_colombia' ? 'DNI COL' :
+                     jogador.documentType === 'dni_peru' ? 'DNI PER' : 'DOC'}
                   </p>
                   <p className="text-[10px] font-medium">
-                    {jogador.documentType === 'cpf' ? jogador.cpf : jogador.rg}
+                    {jogador.documentType === 'cpf' ? jogador.cpf :
+                     jogador.documentType === 'rg' ? jogador.rg :
+                     jogador.documentType === 'dni_colombia' ? jogador.dni_colombia :
+                     jogador.documentType === 'dni_peru' ? jogador.dni_peru : 'N/A'}
                   </p>
                 </div>
               </div>
@@ -155,7 +161,7 @@ export function Carteirinha({ jogador, time, campeonato, lado }: CarteirinhaProp
 
   // VERSO
   return (
-    <div className="w-[350px] h-[220px] bg-white rounded-xl shadow-2xl overflow-hidden relative border-2 border-blue-600">
+    <div className="w-87.5 h-55 bg-white rounded-xl shadow-2xl overflow-hidden relative border-2 border-blue-600">
       {/* Padrão de fundo */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{

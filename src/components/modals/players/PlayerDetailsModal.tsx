@@ -54,7 +54,7 @@ export function PlayerDetailsModal({
     >
       {/* Header com Foto e Nome */}
       <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 pb-4 sm:pb-5 border-b border-gray-200">
-        <div className="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0">
+        <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0">
           {isImageUrl ? (
             <img
               src={player.photo}
@@ -62,7 +62,7 @@ export function PlayerDetailsModal({
               className="w-full h-full object-cover rounded-full border-2 sm:border-4 border-white shadow-lg"
             />
           ) : (
-            <div className="w-full h-full rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center border-2 sm:border-4 border-white shadow-lg">
+            <div className="w-full h-full rounded-full bg-linear-to-br from-gray-300 to-gray-400 flex items-center justify-center border-2 sm:border-4 border-white shadow-lg">
               <span className="text-white font-bold text-xl sm:text-2xl">{player.photo}</span>
             </div>
           )}
@@ -88,7 +88,7 @@ export function PlayerDetailsModal({
           {/* Time */}
           <div className="bg-gray-50 rounded-lg p-2 sm:p-3 border border-gray-200 flex flex-col">
             <div className="flex items-center gap-1 sm:gap-2 text-gray-500 mb-1">
-              <Icon icon={Shield} size={12} className="sm:w-[14px] sm:h-[14px] flex-shrink-0" />
+              <Icon icon={Shield} size={12} className="sm:w-3.5 sm:h-3.5 shrink-0" />
               <span className="text-[10px] sm:text-xs font-medium">Time</span>
             </div>
             {/* Mobile: com truncate e tooltip */}
@@ -98,7 +98,7 @@ export function PlayerDetailsModal({
                   {player.teamName}
                 </p>
               </Tooltip>
-              <svg className="w-3 h-3 text-gray-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-3 h-3 text-gray-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
             </div>
@@ -111,7 +111,7 @@ export function PlayerDetailsModal({
           {/* Camisa */}
           <div className="bg-gray-50 rounded-lg p-2 sm:p-3 border border-gray-200 flex flex-col">
             <div className="flex items-center gap-1 sm:gap-2 text-gray-500 mb-1">
-              <Icon icon={Hash} size={12} className="sm:w-[14px] sm:h-[14px] flex-shrink-0" />
+              <Icon icon={Hash} size={12} className="sm:w-3.5 sm:h-3.5 shrink-0" />
               <span className="text-[10px] sm:text-xs font-medium">Camisa</span>
             </div>
             <p className="text-xs sm:text-sm font-semibold text-gray-900">Nº {player.shirtNumber}</p>
@@ -120,7 +120,7 @@ export function PlayerDetailsModal({
           {/* Posição */}
           <div className="bg-gray-50 rounded-lg p-2 sm:p-3 border border-gray-200 flex flex-col">
             <div className="flex items-center gap-1 sm:gap-2 text-gray-500 mb-1">
-              <Icon icon={User} size={12} className="sm:w-[14px] sm:h-[14px] flex-shrink-0" />
+              <Icon icon={User} size={12} className="sm:w-3.5 sm:h-3.5 shrink-0" />
               <span className="text-[10px] sm:text-xs font-medium">Posição</span>
             </div>
             {/* Mobile: com truncate e tooltip */}
@@ -130,7 +130,7 @@ export function PlayerDetailsModal({
                   {player.position}
                 </p>
               </Tooltip>
-              <svg className="w-3 h-3 text-gray-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-3 h-3 text-gray-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
             </div>
@@ -149,7 +149,7 @@ export function PlayerDetailsModal({
           {/* Data de Nascimento */}
           <div className="bg-gray-50 rounded-lg p-2 sm:p-3 border border-gray-200 flex flex-col">
             <div className="flex items-center gap-1 sm:gap-2 text-gray-500 mb-1">
-              <Icon icon={Calendar} size={12} className="sm:w-[14px] sm:h-[14px] flex-shrink-0" />
+              <Icon icon={Calendar} size={12} className="sm:w-3.5 sm:h-3.5 shrink-0" />
               <span className="text-[10px] sm:text-xs font-medium">Nascimento</span>
             </div>
             <p className="text-[11px] sm:text-sm font-semibold text-gray-900">{formatDate(player.birthDate)}</p>
@@ -158,7 +158,7 @@ export function PlayerDetailsModal({
           {/* Nacionalidade */}
           <div className="bg-gray-50 rounded-lg p-2 sm:p-3 border border-gray-200 flex flex-col">
             <div className="flex items-center gap-1 sm:gap-2 text-gray-500 mb-1">
-              <Icon icon={MapPin} size={12} className="sm:w-[14px] sm:h-[14px] flex-shrink-0" />
+              <Icon icon={MapPin} size={12} className="sm:w-3.5 sm:h-3.5 shrink-0" />
               <span className="text-[10px] sm:text-xs font-medium">Nacionalidade</span>
             </div>
             {/* Mobile: com truncate e tooltip */}
@@ -168,7 +168,7 @@ export function PlayerDetailsModal({
                   {player.nationality}
                 </p>
               </Tooltip>
-              <svg className="w-3 h-3 text-gray-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-3 h-3 text-gray-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
             </div>
@@ -182,22 +182,24 @@ export function PlayerDetailsModal({
           {player.phone && (
             <div className="bg-gray-50 rounded-lg p-2 sm:p-3 border border-gray-200 flex flex-col">
               <div className="flex items-center gap-1 sm:gap-2 text-gray-500 mb-1">
-                <Icon icon={Phone} size={12} className="sm:w-[14px] sm:h-[14px] flex-shrink-0" />
+                <Icon icon={Phone} size={12} className="sm:w-3.5 sm:h-3.5 shrink-0" />
                 <span className="text-[10px] sm:text-xs font-medium">Contato</span>
               </div>
               {/* Mobile: com truncate e tooltip */}
               <div className="sm:hidden flex items-start gap-1">
-                <Tooltip content={player.phone}>
+                <Tooltip content={`${player.phoneCode || ''} ${player.phone}`}>
                   <p className="text-[11px] font-semibold text-gray-900 line-clamp-1 flex-1 min-w-0">
+                    {player.phoneCode && <span className="text-gray-600">{player.phoneCode} </span>}
                     {player.phone}
                   </p>
                 </Tooltip>
-                <svg className="w-3 h-3 text-gray-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-3 h-3 text-gray-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
             </div>
             {/* Desktop: sem truncate, sem tooltip */}
             <p className="hidden sm:block text-sm font-semibold text-gray-900">
+              {player.phoneCode && <span className="text-gray-600">{player.phoneCode} </span>}
               {player.phone}
             </p>
           </div>
@@ -210,7 +212,7 @@ export function PlayerDetailsModal({
         <h4 className="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 sm:mb-3">Estatísticas</h4>
         <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-2 sm:mb-3">
           {/* Gols */}
-          <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-xl p-2.5 sm:p-4 text-center">
+          <div className="bg-linear-to-br from-green-50 to-green-100 border border-green-200 rounded-xl p-2.5 sm:p-4 text-center">
             <div className="flex items-center justify-center gap-1.5 mb-1">
               <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
               <p className="text-xl sm:text-2xl font-black text-green-700">{stats.totalGols}</p>
@@ -221,7 +223,7 @@ export function PlayerDetailsModal({
           </div>
 
           {/* Cartões Amarelos */}
-          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 border border-yellow-200 rounded-xl p-2.5 sm:p-4 text-center">
+          <div className="bg-linear-to-br from-yellow-50 to-yellow-100 border border-yellow-200 rounded-xl p-2.5 sm:p-4 text-center">
             <div className="flex items-center justify-center gap-1.5 mb-1">
               <div className="w-2.5 h-3.5 sm:w-3 sm:h-4 bg-yellow-400 rounded-sm shadow-sm"></div>
               <p className="text-xl sm:text-2xl font-black text-yellow-700">{stats.cartoesAmarelos}</p>
@@ -232,7 +234,7 @@ export function PlayerDetailsModal({
           </div>
 
           {/* Cartões Vermelhos */}
-          <div className="bg-gradient-to-br from-red-50 to-red-100 border border-red-200 rounded-xl p-2.5 sm:p-4 text-center">
+          <div className="bg-linear-to-br from-red-50 to-red-100 border border-red-200 rounded-xl p-2.5 sm:p-4 text-center">
             <div className="flex items-center justify-center gap-1.5 mb-1">
               <div className="w-2.5 h-3.5 sm:w-3 sm:h-4 bg-red-500 rounded-sm shadow-sm"></div>
               <p className="text-xl sm:text-2xl font-black text-red-700">{stats.cartoesVermelhos}</p>
@@ -261,22 +263,32 @@ export function PlayerDetailsModal({
             </button>
           )}
 
-          {/* Documento (RG ou CPF) */}
-          {player.documentType && (player.rg || player.cpf) && (
+          {/* Documento (RG, CPF, DNI Colombia ou DNI Peru) */}
+          {player.documentType && (player.rg || player.cpf || player.dni_colombia || player.dni_peru) && (
             <div className="bg-gray-50 border border-gray-200 rounded-xl p-2.5 sm:p-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0">
-                  <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-600 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm font-semibold text-gray-900 flex-shrink-0">
-                    {player.documentType.toUpperCase()}
+                  <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-600 shrink-0" />
+                  <span className="text-xs sm:text-sm font-semibold text-gray-900 shrink-0">
+                    {player.documentType === 'dni_colombia' ? 'DNI COL' : 
+                     player.documentType === 'dni_peru' ? 'DNI PER' : 
+                     player.documentType.toUpperCase()}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <Tooltip content={player.documentType === 'cpf' ? player.cpf || '' : player.rg || ''}>
+                    <Tooltip content={
+                      player.documentType === 'cpf' ? player.cpf || '' :
+                      player.documentType === 'rg' ? player.rg || '' :
+                      player.documentType === 'dni_colombia' ? player.dni_colombia || '' :
+                      player.dni_peru || ''
+                    }>
                       <div className="flex items-center gap-1">
                         <span className="text-xs sm:text-sm font-mono text-gray-700 truncate">
-                          {player.documentType === 'cpf' ? player.cpf : player.rg}
+                          {player.documentType === 'cpf' ? player.cpf :
+                           player.documentType === 'rg' ? player.rg :
+                           player.documentType === 'dni_colombia' ? player.dni_colombia :
+                           player.dni_peru}
                         </span>
-                        <svg className="w-3 h-3 text-gray-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-3 h-3 text-gray-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                         </svg>
                       </div>

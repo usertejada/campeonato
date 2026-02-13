@@ -2,13 +2,14 @@
 // src/components/modals/CreateTeamModal.tsx
 // ========================================
 import React, { useState } from 'react';
-import { Users, User, Mail, Phone, Calendar, Trophy, Save } from 'lucide-react';
+import { Users, User, Mail, Calendar, Trophy, Save } from 'lucide-react';
 import { Modal } from '@/components/molecules/Modal';
 import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/molecules/Button';
 import { CustomSelect } from '@/components/atoms/CustomSelect';
 import { ImageUpload } from '@/components/atoms/ImageUpload';
-import { formatPhone } from '@/utils/formatters/inputFormatters';
+import { PhoneInput } from '@/components/atoms/PhoneInput';
+import { formatPhoneByCode } from '@/config/countryConfig';
 import { teamService } from '@/services/teamService';
 import type { Team } from '@/types/team.types';
 
@@ -35,6 +36,7 @@ export function CreateTeamModal({
     coach: string;
     email: string;
     phone: string;
+    phoneCode: string;
     players: number;
     foundedYear: number;
     isActive: boolean;
@@ -46,6 +48,7 @@ export function CreateTeamModal({
     coach: initialData?.coach || '',
     email: initialData?.email || '',
     phone: initialData?.phone || '',
+    phoneCode: initialData?.phoneCode || '+55',
     players: initialData?.players || 0,
     foundedYear: initialData?.foundedYear || new Date().getFullYear(),
     isActive: initialData?.isActive ?? true,
@@ -145,16 +148,17 @@ export function CreateTeamModal({
         {/* Details Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           
-          <Input
+          <PhoneInput
             label="Telefone"
-            type="tel"
-            placeholder="(99) 99999-9999"
             value={formData.phone}
             onChange={(e) => {
-              const formatted = formatPhone(e.target.value);
+              const formatted = formatPhoneByCode(e.target.value, formData.phoneCode);
               setFormData(prev => ({ ...prev, phone: formatted }));
             }}
-            leftIcon={Phone}
+            phoneCode={formData.phoneCode}
+            onPhoneCodeChange={(code) => {
+              setFormData(prev => ({ ...prev, phoneCode: code, phone: '' }));
+            }}
           />
 
           <Input
