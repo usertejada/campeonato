@@ -1,5 +1,3 @@
-// @/app/campeonatos/page.tsx
-
 'use client'
 
 import { AppShell } from '@/components/layout/AppShell'
@@ -7,6 +5,7 @@ import { PageHeader } from '@/components/ui/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { SearchBar } from '@/components/ui/SearchBar'
 import { FilterDropdown } from '@/components/ui/FilterDropdown'
+import { FilterIconButton } from '@/components/ui/FilterIconButton'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import CardCampeonatos from '@/campeonatos/CardCampeonatos'
 import { CampeonatoDetailsModal } from '@/campeonatos/CampeonatoDetailsModal'
@@ -55,8 +54,6 @@ export default function CampeonatosPage() {
 
   const { campeonatos, loading, error, search, setSearch, setStatusFiltro, refetch } = useCampeonatos()
 
-  // ─── Handlers ────────────────────────────────────────
-
   async function handleCriar(data: CampeonatoInsert) {
     try {
       await createCampeonato(data)
@@ -74,7 +71,6 @@ export default function CampeonatosPage() {
     } catch (err) { console.error('Erro ao editar:', err) }
   }
 
-  // ✅ Toggle: se inativo → ativa, senão → inativa
   async function handleToggleBloquear() {
     if (!selecionado) return
     setActionLoading(true)
@@ -84,7 +80,7 @@ export default function CampeonatosPage() {
       setModalBloquearOpen(false)
       setSelecionado(null)
       refetch()
-    } catch (err) { console.error('Erro ao bloquear/desbloquear:', err) }
+    } catch (err) { console.error('Erro:', err) }
     finally { setActionLoading(false) }
   }
 
@@ -96,25 +92,22 @@ export default function CampeonatosPage() {
       setModalExcluirOpen(false)
       setSelecionado(null)
       refetch()
-    } catch (err) { console.error('Erro ao excluir:', err) }
+    } catch (err) { console.error('Erro:', err) }
     finally { setActionLoading(false) }
   }
-
-  // ─── Abrir modais ─────────────────────────────────────
 
   function abrirDetalhes(c: Campeonato) { setSelecionado(c); setModalDetalhesOpen(true) }
   function abrirEditar(c: Campeonato)   { setSelecionado(c); setModalEditarOpen(true)   }
   function abrirExcluir(c: Campeonato)  { setSelecionado(c); setModalExcluirOpen(true)  }
   function abrirBloquear(c: Campeonato) { setSelecionado(c); setModalBloquearOpen(true) }
 
-  // ─── Render ───────────────────────────────────────────
-
-  // ✅ Detecta se é desbloquear pra passar o tipo certo pro modal
   const tipoModalBloquear = selecionado?.status === 'inativo' ? 'desbloquear' : 'bloquear'
 
   return (
-    <AppShell>
-      <div className="hidden sm:block">
+    <AppShell onAdd={() => setModalCriarOpen(true)}>
+
+      {/* Desktop: header com botão */}
+      <div className="hidden lg:block">
         <PageHeader
           title="Campeonatos"
           subtitle="Gerencie todos os campeonatos do sistema"
@@ -126,21 +119,38 @@ export default function CampeonatosPage() {
         />
       </div>
 
-      <div className="sm:hidden mb-6">
-        <PageHeader title="Campeonatos" subtitle="Gerencie todos os campeonatos do sistema" />
+      {/* Mobile: título */}
+      <div className="lg:hidden mb-4">
+        <h1 className="text-xl font-bold text-gray-900">Campeonatos</h1>
+        <p className="text-sm text-gray-500">Gerencie todos os campeonatos</p>
       </div>
 
-      <div className="flex sm:hidden items-center gap-1 mb-4">
-        <Button variant="primary" icon={Plus} onClick={() => setModalCriarOpen(true)} fullWidth>
-          Campeonato
-        </Button>
-        <FilterDropdown options={filterOptions} onSelect={(v) => setStatusFiltro(v as any)} placeholder="Todos" />
-      </div>
+      {/* Search + Filtro */}
+      <div className="flex items-center gap-2 mb-8">
+        <div className="flex-1">
+          <SearchBar
+            className="text-gray-500"
+            placeholder="Buscar campeonatos..."
+            onSearch={setSearch}
+            size="full"
+          />
+        </div>
 
-      <div className="flex items-center gap-4 mb-8 justify-between">
-        <SearchBar className="text-gray-500" placeholder="Buscar campeonatos..." onSearch={setSearch} size="lg" />
-        <div className="hidden sm:block">
-          <FilterDropdown options={filterOptions} onSelect={(v) => setStatusFiltro(v as any)} placeholder="Todos" />
+        {/* Mobile: só ícone */}
+        <div className="lg:hidden">
+          <FilterIconButton
+            options={filterOptions}
+            onSelect={(v) => setStatusFiltro(v as any)}
+          />
+        </div>
+
+        {/* Desktop: dropdown completo */}
+        <div className="hidden lg:block">
+          <FilterDropdown
+            options={filterOptions}
+            onSelect={(v) => setStatusFiltro(v as any)}
+            placeholder="Todos"
+          />
         </div>
       </div>
 
@@ -187,7 +197,6 @@ export default function CampeonatosPage() {
       )}
 
       {/* ── Modais ───────────────────────────────────────── */}
-
       <CreateCampeonatoModal
         isOpen={modalCriarOpen}
         onClose={() => setModalCriarOpen(false)}
@@ -211,22 +220,13 @@ export default function CampeonatosPage() {
         />
       )}
 
-      {/* ✅ Bloquear/Desbloquear com tipo e textos dinâmicos */}
       <ConfirmModal
         isOpen={modalBloquearOpen}
         onClose={() => { setModalBloquearOpen(false); setSelecionado(null) }}
         onConfirm={handleToggleBloquear}
         type={tipoModalBloquear}
-        titulo={
-          tipoModalBloquear === 'desbloquear'
-            ? `Desbloquear "${selecionado?.nome}"?`
-            : `Bloquear "${selecionado?.nome}"?`
-        }
-        descricao={
-          tipoModalBloquear === 'desbloquear'
-            ? 'O campeonato voltará ao status ativo e ficará visível normalmente.'
-            : 'O campeonato será marcado como inativo. Você pode desfazer isso depois.'
-        }
+        titulo={tipoModalBloquear === 'desbloquear' ? `Desbloquear "${selecionado?.nome}"?` : `Bloquear "${selecionado?.nome}"?`}
+        descricao={tipoModalBloquear === 'desbloquear' ? 'O campeonato voltará ao status ativo.' : 'O campeonato será marcado como inativo.'}
         loading={actionLoading}
       />
 
@@ -236,7 +236,7 @@ export default function CampeonatosPage() {
         onConfirm={handleExcluir}
         type="excluir"
         titulo={`Excluir "${selecionado?.nome}"?`}
-        descricao="Essa ação é permanente e não pode ser desfeita. Todos os dados serão removidos."
+        descricao="Essa ação é permanente e não pode ser desfeita."
         loading={actionLoading}
       />
     </AppShell>

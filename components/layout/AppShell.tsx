@@ -1,19 +1,20 @@
 'use client'
 
 // components/layout/AppShell.tsx
-// Toda a lógica de auth, sidebar e breadcrumb fica aqui
-
 import { Sidebar } from '@/components/layout/Sidebar'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
+import { MobileHeader } from '@/components/layout/MobileHeader'
+import { MobileNavBar } from '@/components/layout/MobileNavBar'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
 interface AppShellProps {
   children: React.ReactNode
+  onAdd?: () => void
 }
 
-export function AppShell({ children }: AppShellProps) {
+export function AppShell({ children, onAdd }: AppShellProps) {
   const [user, setUser]       = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const router                = useRouter()
@@ -22,11 +23,7 @@ export function AppShell({ children }: AppShellProps) {
   useEffect(() => {
     const getUser = async () => {
       const { data: { session } } = await supabase.auth.getSession()
-
-      if (!session) {
-        router.push('/login')
-        return
-      }
+      if (!session) { router.push('/login'); return }
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -37,7 +34,6 @@ export function AppShell({ children }: AppShellProps) {
       setUser(profile)
       setLoading(false)
     }
-
     getUser()
   }, [router, supabase])
 
@@ -52,11 +48,34 @@ export function AppShell({ children }: AppShellProps) {
   if (!user) return null
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar user={user} />
-      <main className="flex-1 overflow-y-auto">
-        <div className="p-8">
-          <Breadcrumb />
+    <div className="flex bg-gray-50" style={{ minHeight: '100dvh' }}>
+
+      {/* ✅ Sidebar — APENAS desktop (hidden no mobile garantido aqui e no próprio componente) */}
+      <div className="hidden lg:block">
+        <Sidebar user={user} />
+      </div>
+
+      {/* ✅ Mobile: header fixo no topo */}
+      <MobileHeader onAdd={onAdd} />
+
+      {/* ✅ Mobile: nav scroll horizontal fixo na parte inferior */}
+      <MobileNavBar />
+
+      {/* Conteúdo principal */}
+      <main className="flex-1 overflow-y-auto w-full">
+        <div
+          className="p-4 lg:p-8"
+          style={{
+            // Mobile: espaço pro header (56px) no topo + nav bar (~60px) no bottom
+            paddingTop: 'calc(56px + 1rem)',
+            paddingBottom: 'calc(60px + env(safe-area-inset-bottom) + 1rem)',
+          }}
+        >
+          {/* Breadcrumb só no desktop */}
+          <div className="hidden lg:block" style={{ paddingTop: 0 }}>
+            <Breadcrumb />
+          </div>
+
           {children}
         </div>
       </main>
